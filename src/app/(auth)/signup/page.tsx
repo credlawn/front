@@ -1,9 +1,16 @@
 import { checkPendingRequest } from '@/auth/signup';
 import SignupForm from './signupForm';
 import PendingMessage from './PendingMessage';
+import { checkCurrentUser } from '@/auth/login';
+import { redirect } from 'next/navigation';
 
 export default async function SignupPage() {
-  
+  const { isLoggedin } = await checkCurrentUser();
+
+  if (isLoggedin) {
+    redirect('/dashboard');
+  }
+
   const result = await checkPendingRequest();
   const showPendingMessage = result.hasPendingRequest && result.success;
 

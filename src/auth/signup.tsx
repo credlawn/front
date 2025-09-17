@@ -2,6 +2,7 @@
 
 import { cookies } from 'next/headers';
 import axiosInstance from "@/lib/axios";
+import axios from 'axios';
 
 interface UserRequestData {
   full_name: string;
@@ -35,21 +36,30 @@ export async function createUserRequest(data: UserRequestData): Promise<ApiRespo
       full_name: data.full_name,
       email: data.email,
       mobile: data.mobile,
-      password: data.password,
-      status: "Pending",
-      requested_on: new Date().toISOString()
+      password: data.password
     });
 
-    return {
-      success: true,
-      data: response.data,
-      uid: uidCookie 
-    };
+    const backendResponse = response.data.message;
+
+    if (backendResponse.success) {
+        return {
+            success: true,
+            message: backendResponse.message,
+            uid: uidCookie
+        };
+    } else {
+        return {
+            success: false,
+            error: backendResponse.error
+        };
+    }
     
   } catch (error: unknown) {
     let message = "Unknown error";
 
-    if (error instanceof Error) {
+    if (axios.isAxiosError(error)) {
+        message = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
       message = error.message;
     }
 

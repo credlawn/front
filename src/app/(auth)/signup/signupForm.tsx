@@ -16,6 +16,8 @@ export default function SignupForm() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [mobileError, setMobileError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,6 +25,8 @@ export default function SignupForm() {
     setLoading(true);
     setError('');
     setMessage('');
+    setEmailError('');
+    setMobileError('');
     
     try {
       const result = await createUserRequest({
@@ -35,10 +39,17 @@ export default function SignupForm() {
       if (result.success) {
         setMessage(result.message || 'User request submitted successfully!');
         setTimeout(() => {
-          router.push('/signup/success');
-        }, 2000);
+          router.refresh();
+        }, 200);
       } else {
-        setError(result.error || 'Failed to submit request');
+        const errorMessage = result.error || 'Failed to submit request';
+        if (errorMessage.includes('Email')) {
+          setEmailError(errorMessage);
+        } else if (errorMessage.includes('Mobile')) {
+          setMobileError(errorMessage);
+        } else {
+          setError(errorMessage);
+        }
       }
       
     } catch {
@@ -121,6 +132,7 @@ export default function SignupForm() {
               className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
               placeholder="Email address"
             />
+            {emailError && <p className="text-xs text-red-600 mt-1">{emailError}</p>}
           </div>
           
           <div>
@@ -136,6 +148,7 @@ export default function SignupForm() {
               className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
               placeholder="Mobile Number"
             />
+            {mobileError && <p className="text-xs text-red-600 mt-1">{mobileError}</p>}
           </div>
           
           <div>
