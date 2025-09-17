@@ -37,3 +37,20 @@ export async function loginUser({ email, password }: LoginProps): Promise<ApiRes
     return { success: false, error: message };
   }
 }
+
+export async function logoutUser(): Promise<ApiResponse> {
+  try {
+    await axiosInstance.post("/api/method/logout");
+    return { success: true };
+  } catch (error: unknown) {
+    let message = "Unknown error";
+
+    if (axios.isAxiosError(error)) {
+      message = error.response?.data?.message || error.message;
+    } else if (error instanceof Error) {
+      message = error.message;
+    }
+
+    return { success: false, error: message };
+  }
+}

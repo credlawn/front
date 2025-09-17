@@ -1,10 +1,19 @@
-
 "use client";
 
 import React, { useState } from "react";
+import { logoutUser } from "@/auth/authActions";
+import { clearSession } from "@/auth/setSession";
 
 const DashboardButtons = () => {
   const [message, setMessage] = useState("");
+
+  const handleLogout = async () => {
+    await logoutUser();
+    await clearSession();
+    setMessage("Logged out successfully");
+    window.location.href = "/login";
+    
+  };
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -21,6 +30,13 @@ const DashboardButtons = () => {
           onClick={() => setMessage("Lead button clicked")}
         >
           Lead
+        </button>
+
+        <button
+          className="bg-red-600 text-white px-6 py-3 rounded-xl shadow hover:bg-red-700 transition"
+          onClick={handleLogout}
+        >
+          Logout
         </button>
       </div>
 
