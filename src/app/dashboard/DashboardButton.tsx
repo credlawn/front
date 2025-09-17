@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { logoutUser } from "@/auth/authActions";
+import { logoutUser } from "@/auth/login";
 import { clearSession } from "@/auth/setSession";
 
 const DashboardButtons = () => {

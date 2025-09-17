@@ -1,6 +1,6 @@
 "use client";
 
-import { loginUser } from "@/auth/authActions";
+import { loginUser } from "@/auth/login";
 import { setSession } from "@/auth/setSession";
 import { redirect } from "next/navigation";
 import { useState } from "react";
