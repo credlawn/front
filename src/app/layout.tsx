@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
 import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
-import VisitorsRecord from '@/auth/visitorsRecord';
+import { getSiteSettings } from "@/models/settings/settings";
+import { SettingsProvider } from "@/models/settings/SettingsProvider";
+import { getBannerMessages } from "@/models/topbanner/bannerMessage";
+import VisitorsRecord from "@/auth/visitorsRecord";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-outfit",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -31,6 +32,8 @@ export default async function RootLayout({
   const sid = cookieStore.get('sid')?.value;
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
+  const settings = await getSiteSettings();
+  const bannerMessages = await getBannerMessages();
 
   const sessionData = {
     isLoggedin,
@@ -42,13 +45,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${outfit.className} antialiased`}
       >
-        <SessionProvider session={sessionData}>
-          {!uid && <UIDGenerator />}
-          {children}
-          <VisitorsRecord />
-        </SessionProvider>
+        <SettingsProvider settings={settings} bannerMessages={bannerMessages}>
+          <SessionProvider session={sessionData}>
+            {!uid && <UIDGenerator />}
+            {children}
+            <VisitorsRecord />
+          </SessionProvider>
+        </SettingsProvider>
       </body>
     </html>
   );

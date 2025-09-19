@@ -1,11 +1,21 @@
-import { Button } from "@/components/ui/button"
+'use client';
+
+import { useSettings } from "@/models/settings/SettingsProvider";
+import TopBanner from "@/models/topbanner/topBanner";
 
 export default function Page() {
-  return (
-    <div className="flex gap-4 p-6">
-      <Button variant="primary">Done</Button>
+  const settings = useSettings();
 
+  return (
+    <div>
+      {settings.showBanner === 1 && (
+        <TopBanner
+          {...settings}
+          href={settings.url}
+          messages={settings.bannerMessages}
+        />
+      )}
 
     </div>
-  )
+  );
 }
