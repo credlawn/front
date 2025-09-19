@@ -15,12 +15,6 @@ export async function setSession(sid: string) {
   });
   
   
-  cookieStore.set("uid", "", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 0,
-  });
 }
 
 export async function clearSession() {
@@ -31,13 +25,6 @@ export async function clearSession() {
     maxAge: 0,
   });
   
-  const uid = uuidv4();
-  cookieStore.set("uid", uid, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: 60 * 60 * 24 * 60, 
-  });
 }
 
 export async function ensureUid() {

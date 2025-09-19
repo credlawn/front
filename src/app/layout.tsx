@@ -3,6 +3,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
+import { SessionProvider } from '@/auth/SessionProvider';
+import { checkCurrentUser } from '@/auth/login';
+import VisitorsRecord from '@/auth/visitorsRecord';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,14 +30,25 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const sid = cookieStore.get('sid')?.value;
   const uid = cookieStore.get('uid')?.value;
-  
+  const { isLoggedin, data: user } = await checkCurrentUser();
+
+  const sessionData = {
+    isLoggedin,
+    user,
+    sid,
+    uid,
+  };
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {!sid && !uid && <UIDGenerator />} 
-        {children}
+        <SessionProvider session={sessionData}>
+          {!uid && <UIDGenerator />}
+          {children}
+          <VisitorsRecord />
+        </SessionProvider>
       </body>
     </html>
   );
