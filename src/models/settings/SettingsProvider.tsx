@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
-import { SiteSettingsResponse } from './settings';
+import { SiteSettingsResponse } from './settingsApi';
 
 
 

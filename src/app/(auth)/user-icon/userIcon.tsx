@@ -1,11 +1,15 @@
-"use client";
+'use client';
 
 import { User as UserAvatar, LogOut } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { logoutUser } from '@/auth/login';
-import { clearSession } from "@/auth/setSession";
+import { clearSession } from '@/auth/setSession';
 import { useRouter } from 'next/navigation';
 import LoginModal from '../login/LoginModal';
+import SignupModal from '../signup/SignupModal';
+import { checkPendingRequest } from '@/auth/signup';
+import PendingMessage from '../signup/PendingMessage';
+import SignupForm from '../signup/signupForm';
 
 interface UserIconProps {
   isLoggedIn: boolean;
@@ -14,6 +18,8 @@ interface UserIconProps {
 export default function UserIcon({ isLoggedIn }: UserIconProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+  const [hasPendingRequest, setHasPendingRequest] = useState(false);
   const router = useRouter();
   const userIconRef = useRef<HTMLDivElement>(null);
 
@@ -22,9 +28,9 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
     await clearSession();
     if (response.success) {
       router.refresh();
-      window.location.href = "/";
+      window.location.href = '/';
     } else {
-      console.error("Logout failed:", response.error);
+      console.error('Logout failed:', response.error);
     }
   };
 
@@ -53,10 +59,33 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
     setIsLoginModalOpen(false);
   };
 
+  const handleSignupClick = async () => {
+    const pendingRequest = await checkPendingRequest();
+    if (pendingRequest.hasPendingRequest) {
+      setHasPendingRequest(true);
+    } else {
+      setHasPendingRequest(false);
+    }
+    setIsLoginModalOpen(false);
+    setIsSignupModalOpen(true);
+  };
+
+  const handleSignupSuccess = () => {
+    setIsSignupModalOpen(false);
+  };
+
+  const handleLoginClick = () => {
+    setIsSignupModalOpen(false);
+    setIsLoginModalOpen(true);
+  };
+
   return (
     <>
       <div className="relative" ref={userIconRef}>
-        <button onClick={handleIconClick} className="relative hover:text-red-500 transition-colors cursor-pointer">
+        <button
+          onClick={handleIconClick}
+          className="relative hover:text-red-500 transition-colors cursor-pointer"
+        >
           <UserAvatar />
         </button>
 
@@ -76,7 +105,14 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
         isOpen={isLoginModalOpen}
         onClose={() => setIsLoginModalOpen(false)}
         onLoginSuccess={handleLoginSuccess}
+        onSignupClick={handleSignupClick}
       />
+      <SignupModal
+        isOpen={isSignupModalOpen}
+        onClose={() => setIsSignupModalOpen(false)}
+      >
+        {hasPendingRequest ? <PendingMessage /> : <SignupForm onSignupSuccess={handleSignupSuccess} onLoginClick={handleLoginClick} />}
+      </SignupModal>
     </>
   );
 }

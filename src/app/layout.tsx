@@ -5,7 +5,7 @@ import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
 import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
-import { getSiteSettings } from "@/models/settings/settings";
+import { getSiteSettings } from "@/models/settings/settingsApi";
 import { SettingsProvider } from "@/models/settings/SettingsProvider";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";

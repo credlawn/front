@@ -1,4 +1,4 @@
-import { getSiteSettings } from "@/models/settings/settings";
+import { getSiteSettings } from "@/models/settings/settingsApi";
 import { Logo } from "./logo";
 
 export default async function LogoServer() {

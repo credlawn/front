@@ -1,16 +1,14 @@
 "use client";
 
-import LoginForm from "./loginForm";
-import { MouseEvent } from 'react';
+import { MouseEvent, ReactNode } from 'react';
 
-interface LoginModalProps {
+interface SignupModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLoginSuccess: () => void;
-  onSignupClick: () => void; // Add this line
+  children: ReactNode;
 }
 
-export default function LoginModal({ isOpen, onClose, onLoginSuccess, onSignupClick }: LoginModalProps) {
+export default function SignupModal({ isOpen, onClose, children }: SignupModalProps) {
   if (!isOpen) return null;
 
   const handleContentClick = (e: MouseEvent) => {
@@ -23,7 +21,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess, onSignupCl
       onClick={onClose}
     >
       <div onClick={handleContentClick} className="w-full max-w-sm">
-        <LoginForm onLoginSuccess={onLoginSuccess} onSignupClick={onSignupClick} />
+        {children}
       </div>
     </div>
   );

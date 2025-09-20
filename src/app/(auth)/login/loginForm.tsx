@@ -5,7 +5,7 @@ import { setSession } from "@/auth/setSession";
 import { useSession } from "@/auth/SessionProvider";
 import { useState } from "react";
 
-const LoginForm = ({ onLoginSuccess }: { onLoginSuccess?: () => void }) => {
+const LoginForm = ({ onLoginSuccess, onSignupClick }: { onLoginSuccess?: () => void, onSignupClick?: () => void }) => {
   const { refreshSession } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -76,12 +76,18 @@ const LoginForm = ({ onLoginSuccess }: { onLoginSuccess?: () => void }) => {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer"
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
+      <p className="text-center text-sm text-gray-600 mt-4">
+        Don&apos;t have an account?{' '}
+        <button onClick={onSignupClick} className="text-blue-500 hover:underline cursor-pointer">
+          Sign up
+        </button>
+      </p>
     </div>
   );
 };

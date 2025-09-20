@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { createUserRequest } from '@/auth/signup';
 import { Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 
-export default function SignupForm() {
+export default function SignupForm({ onSignupSuccess, onLoginClick }: { onSignupSuccess: () => void, onLoginClick: () => void }) {
   const [formData, setFormData] = useState({
     full_name: '',
     email: '',
     mobile: '',
-    password: ''
+    password: '',
+    confirmPassword: ''
   });
   
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,7 @@ export default function SignupForm() {
   const [error, setError] = useState('');
   const [emailError, setEmailError] = useState('');
   const [mobileError, setMobileError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,6 +29,13 @@ export default function SignupForm() {
     setMessage('');
     setEmailError('');
     setMobileError('');
+    setPasswordError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setPasswordError("Passwords don't match");
+      setLoading(false);
+      return;
+    }
     
     try {
       const result = await createUserRequest({
@@ -38,6 +47,9 @@ export default function SignupForm() {
       
       if (result.success) {
         setMessage(result.message || 'User request submitted successfully!');
+        if (onSignupSuccess) {
+          onSignupSuccess();
+        }
         setTimeout(() => {
           router.refresh();
         }, 200);
@@ -60,17 +72,12 @@ export default function SignupForm() {
   };
 
   return (
-    <div className="max-w-md w-full space-y-8">
-      <div>
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Request User Access
-        </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Submit your details for admin approval
-        </p>
-      </div>
+    <div className="bg-white p-6 rounded-lg shadow-md w-full">
+      <h2 className="text-2xl font-semibold text-center mb-4">
+        Create a new account
+      </h2>
       
-      <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         {message && (
           <div className="rounded-md bg-green-50 p-4">
             <div className="flex">
@@ -101,97 +108,112 @@ export default function SignupForm() {
           </div>
         )}
         
-        <div className="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label htmlFor="full_name" className="sr-only">
-              Full Name
-            </label>
-            <input
-              id="full_name"
-              name="full_name"
-              type="text"
-              required
-              value={formData.full_name}
-              onChange={(e) => setFormData({...formData, full_name: e.target.value})}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Full Name"
-            />
-          </div>
-          
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-            />
-            {emailError && <p className="text-xs text-red-600 mt-1">{emailError}</p>}
-          </div>
-          
-          <div>
-            <label htmlFor="mobile" className="sr-only">
-              Mobile Number
-            </label>
-            <input
-              id="mobile"
-              name="mobile"
-              type="tel"
-              value={formData.mobile}
-              onChange={(e) => setFormData({...formData, mobile: e.target.value})}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Mobile Number"
-            />
-            {mobileError && <p className="text-xs text-red-600 mt-1">{mobileError}</p>}
-          </div>
-          
-          <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              value={formData.password}
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Password"
-            />
-          </div>
+        <div>
+          <label className="sr-only" htmlFor="full_name">
+            Full Name
+          </label>
+          <input
+            id="full_name"
+            name="full_name"
+            type="text"
+            required
+            value={formData.full_name}
+            onChange={(e) => setFormData({...formData, full_name: e.target.value})}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Full Name"
+          />
+        </div>
+        
+        <div>
+          <label className="sr-only" htmlFor="email">
+            Email address
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            value={formData.email}
+            onChange={(e) => setFormData({...formData, email: e.target.value})}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Email address"
+          />
+          {emailError && <p className="text-xs text-red-600 mt-1">{emailError}</p>}
+        </div>
+        
+        <div>
+          <label className="sr-only" htmlFor="mobile">
+            Mobile Number
+          </label>
+          <input
+            id="mobile"
+            name="mobile"
+            type="tel"
+            value={formData.mobile}
+            onChange={(e) => setFormData({...formData, mobile: e.target.value})}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Mobile Number"
+          />
+          {mobileError && <p className="text-xs text-red-600 mt-1">{mobileError}</p>}
+        </div>
+        
+        <div>
+          <label className="sr-only" htmlFor="password">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            value={formData.password}
+            onChange={(e) => setFormData({...formData, password: e.target.value})}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Password"
+          />
+        </div>
+
+        <div>
+          <label className="sr-only" htmlFor="confirmPassword">
+            Confirm Password
+          </label>
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            required
+            value={formData.confirmPassword}
+            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+            className="w-full p-2 border border-gray-300 rounded"
+            placeholder="Confirm Password"
+          />
+          {passwordError && <p className="text-xs text-red-600 mt-1">{passwordError}</p>}
         </div>
 
         <div>
           <button
             type="submit"
             disabled={loading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 cursor-pointer disabled:opacity-50"
           >
             {loading ? (
-              <span className="flex items-center">
+              <span className="flex items-center justify-center">
                 <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                 Submitting...
               </span>
             ) : (
-              'Submit Request'
+              'Submit'
             )}
           </button>
         </div>
       </form>
       
-      <div className="text-center">
+      <div className="text-center mt-4">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
-          <a href="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <button onClick={onLoginClick} className="font-medium text-blue-600 hover:text-blue-500 cursor-pointer">
             Sign in
-          </a>
+          </button>
         </p>
       </div>
     </div>
