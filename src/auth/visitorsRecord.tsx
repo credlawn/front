@@ -5,7 +5,7 @@ import { useSession } from '@/auth/SessionProvider';
 import { recordVisitorAction, updateSessionAction } from '@/auth/visitorActions';
 
 export default function VisitorsRecord() {
-  const session = useSession();
+  const { session } = useSession();
   const visitStartTime = useRef(Date.now());
   const isInitialLoad = useRef(true);
 

@@ -14,6 +14,7 @@ const DashboardButtons = () => {
     window.location.href = "/login";
     
   };
+  
 
   return (
     <div className="flex flex-col items-center gap-4">

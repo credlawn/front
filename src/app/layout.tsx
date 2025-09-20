@@ -7,8 +7,9 @@ import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
 import { getSiteSettings } from "@/models/settings/settings";
 import { SettingsProvider } from "@/models/settings/SettingsProvider";
-import { getBannerMessages } from "@/models/topbanner/bannerMessage";
 import VisitorsRecord from "@/auth/visitorsRecord";
+import NavbarContainer from "@/models/navbar";
+import TopBannerPage from "@/models/topbanner";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -33,7 +34,6 @@ export default async function RootLayout({
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settings = await getSiteSettings();
-  const bannerMessages = await getBannerMessages();
 
   const sessionData = {
     isLoggedin,
@@ -47,8 +47,10 @@ export default async function RootLayout({
       <body
         className={`${outfit.className} antialiased`}
       >
-        <SettingsProvider settings={settings} bannerMessages={bannerMessages}>
+        <SettingsProvider settings={settings}>
           <SessionProvider session={sessionData}>
+            <TopBannerPage />
+            <NavbarContainer />
             {!uid && <UIDGenerator />}
             {children}
             <VisitorsRecord />

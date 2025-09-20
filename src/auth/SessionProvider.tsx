@@ -1,6 +1,7 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
+import { createContext, useContext, ReactNode, useState, useCallback } from 'react';
+import { checkCurrentUser } from './login';
 
 interface SessionData {
   isLoggedin: boolean;
@@ -13,11 +14,23 @@ interface SessionData {
   uid?: string;
 }
 
-const SessionContext = createContext<SessionData | undefined>(undefined);
+interface SessionContextType {
+  session: SessionData;
+  refreshSession: () => Promise<void>;
+}
 
-export function SessionProvider({ children, session }: { children: ReactNode; session: SessionData }) {
+const SessionContext = createContext<SessionContextType | undefined>(undefined);
+
+export function SessionProvider({ children, session: initialSession }: { children: ReactNode; session: SessionData }) {
+  const [session, setSession] = useState<SessionData>(initialSession);
+
+  const refreshSession = useCallback(async () => {
+    const newSessionData = await checkCurrentUser();
+    setSession(s => ({...s, ...newSessionData, isLoggedin: newSessionData.isLoggedin, user: newSessionData.data}));
+  }, []);
+
   return (
-    <SessionContext.Provider value={session}>
+    <SessionContext.Provider value={{ session, refreshSession }}>
       {children}
     </SessionContext.Provider>
   );
