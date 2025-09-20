@@ -10,16 +10,19 @@ import SignupModal from '../signup/SignupModal';
 import { checkPendingRequest } from '@/auth/signup';
 import PendingMessage from '../signup/PendingMessage';
 import SignupForm from '../signup/signupForm';
+import Loader from '@/ui/loader';
 
 interface UserIconProps {
   isLoggedIn: boolean;
+  onIconClick?: () => void;
 }
 
-export default function UserIcon({ isLoggedIn }: UserIconProps) {
+export default function UserIcon({ isLoggedIn, onIconClick }: UserIconProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
   const [hasPendingRequest, setHasPendingRequest] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const userIconRef = useRef<HTMLDivElement>(null);
 
@@ -48,6 +51,9 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
   }, []);
 
   const handleIconClick = () => {
+    if (onIconClick) {
+      onIconClick();
+    }
     if (isLoggedIn) {
       setIsOpen(!isOpen);
     } else {
@@ -60,14 +66,16 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
   };
 
   const handleSignupClick = async () => {
+    setIsLoginModalOpen(false);
+    setIsLoading(true);
     const pendingRequest = await checkPendingRequest();
     if (pendingRequest.hasPendingRequest) {
       setHasPendingRequest(true);
     } else {
       setHasPendingRequest(false);
     }
-    setIsLoginModalOpen(false);
     setIsSignupModalOpen(true);
+    setIsLoading(false);
   };
 
   const handleSignupSuccess = () => {
@@ -81,6 +89,7 @@ export default function UserIcon({ isLoggedIn }: UserIconProps) {
 
   return (
     <>
+      {isLoading && <Loader />}
       <div className="relative" ref={userIconRef}>
         <button
           onClick={handleIconClick}

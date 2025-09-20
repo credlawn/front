@@ -8,6 +8,7 @@ import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";
 import UserIconContainer from "@/app/(auth)/user-icon";
 import { HeartIcon, ShoppingCartIcon, MenuIcon, SearchIcon, ChevronDown } from "lucide-react";
+import Sidebar from "../sidebar/sidebar";
 
 interface NavbarProps {
   menuData: MenuResponse[];
@@ -19,7 +20,7 @@ export default function Navbar({ menuData }: NavbarProps) {
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
 
-  const [, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -129,7 +130,7 @@ export default function Navbar({ menuData }: NavbarProps) {
             <button
               ref={sidebarButtonRef}
               className="flex items-center justify-center"
-              onClick={() => setIsSidebarOpen(true)}
+              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               aria-label="Menu"
             >
               <MenuIcon />
@@ -154,7 +155,6 @@ export default function Navbar({ menuData }: NavbarProps) {
             <button className="relative hover:text-red-500 transition-colors cursor-pointer">
               <HeartIcon />
             </button>
-            <UserIconContainer />
             <button className="relative hover:text-red-500 transition-colors cursor-pointer">
               <ShoppingCartIcon />
             </button>
@@ -173,6 +173,14 @@ export default function Navbar({ menuData }: NavbarProps) {
             />
           </div>
         )}
+      </div>
+      <div ref={sidebarRef}>
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          menuData={menuData}
+          settings={settings}
+        />
       </div>
     </header>
   );
