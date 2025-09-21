@@ -5,11 +5,11 @@ import { useState, useRef, useEffect } from 'react';
 import { logoutUser } from '@/auth/login';
 import { clearSession } from '@/auth/setSession';
 import { useRouter } from 'next/navigation';
-import LoginModal from '../login/LoginModal';
-import SignupModal from '../signup/SignupModal';
+import LoginModal from './login/LoginModal';
+import SignupModal from './signup/SignupModal';
 import { checkPendingRequest } from '@/auth/signup';
-import PendingMessage from '../signup/PendingMessage';
-import SignupForm from '../signup/signupForm';
+import PendingMessage from './signup/PendingMessage';
+import SignupForm from './signup/signupForm';
 import Loader from '@/ui/loader';
 
 interface UserIconProps {

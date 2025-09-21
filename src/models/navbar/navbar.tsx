@@ -6,7 +6,7 @@ import { MenuResponse } from "./navbarApi";
 import { useSettings } from "@/models/settings";
 import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";
-import UserIconContainer from "@/app/(auth)/user-icon";
+import UserIconContainer from "@/icon/user";
 import { HeartIcon, ShoppingCartIcon, MenuIcon, SearchIcon, ChevronDown } from "lucide-react";
 import Sidebar from "../sidebar/sidebar";
 
