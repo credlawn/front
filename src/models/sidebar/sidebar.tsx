@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { MenuResponse } from "@/models/navbar/navbarApi";
-import { MappedSettings } from "../settings/SettingsProvider";
+import { MappedSettings } from "../settings";
 import UserIconContainer from "@/app/(auth)/user-icon";
 import { useSession } from "@/auth/SessionProvider";
 

@@ -6,7 +6,7 @@ import UIDGenerator from '@/auth/tracking';
 import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
 import { getSiteSettings } from "@/models/settings/settingsApi";
-import { SettingsProvider } from "@/models/settings/SettingsProvider";
+import { SettingsProvider } from "@/models/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
 import TopBannerPage from "@/models/topbanner";

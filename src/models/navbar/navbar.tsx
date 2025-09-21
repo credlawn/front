@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MenuResponse } from "./navbarApi";
-import { useSettings } from "@/models/settings/SettingsProvider";
+import { useSettings } from "@/models/settings";
 import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";
 import UserIconContainer from "@/app/(auth)/user-icon";
