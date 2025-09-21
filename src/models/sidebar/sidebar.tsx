@@ -46,7 +46,7 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
         <h4 className="text-lg font-medium capitalize !leading-tight text-gray-900">
           {session.isLoggedin ? `Hello, ${session.user?.full_name}` : "Hello, Guest"}
         </h4>
-        <UserIconContainer onIconClick={onClose} />
+        <UserIconContainer onLoggedOutClick={onClose} />
       </div>
 
       {/* Menu Items */}

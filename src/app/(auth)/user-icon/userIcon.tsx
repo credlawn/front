@@ -14,10 +14,10 @@ import Loader from '@/ui/loader';
 
 interface UserIconProps {
   isLoggedIn: boolean;
-  onIconClick?: () => void;
+  onLoggedOutClick?: () => void;
 }
 
-export default function UserIcon({ isLoggedIn, onIconClick }: UserIconProps) {
+export default function UserIcon({ isLoggedIn, onLoggedOutClick }: UserIconProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
@@ -51,12 +51,12 @@ export default function UserIcon({ isLoggedIn, onIconClick }: UserIconProps) {
   }, []);
 
   const handleIconClick = () => {
-    if (onIconClick) {
-      onIconClick();
-    }
     if (isLoggedIn) {
       setIsOpen(!isOpen);
     } else {
+      if (onLoggedOutClick) {
+        onLoggedOutClick();
+      }
       setIsLoginModalOpen(true);
     }
   };

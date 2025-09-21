@@ -78,33 +78,36 @@ export default function Navbar({ menuData }: NavbarProps) {
           <nav className="flex items-center gap-4">
             <ul className="flex items-center gap-4">
               {menuData.map((menuItem) => (
-                <li
-                  key={menuItem.parent.slug}
-                  className="relative"
-                  onMouseEnter={() => menuItem.children.length > 0 && setOpenMenu(menuItem.parent.slug)}
-                  onMouseLeave={() => menuItem.children.length > 0 && setOpenMenu(null)}
-                >
-                  <Link href={`/${menuItem.parent.slug}`}>
-                    <span className="cursor-pointer hover:text-red-500 flex items-center">
-                      {menuItem.parent.menu_name}
-                      {menuItem.children.length > 0 && <ChevronDown className="ml-1 h-4 w-4" />}
-                    </span>
-                  </Link>
-                  {menuItem.children.length > 0 && openMenu === menuItem.parent.slug && (
-                    <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
-                      <ul className="block">
-                        {menuItem.children.map((child) => (
-                          <li key={child.slug}>
-                            <Link href={`/${child.slug}`}>
-                              <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                {child.menu_name}
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                <li key={menuItem.parent.slug} className="relative">
+                  <div
+                    onMouseEnter={() => menuItem.children.length > 0 && setOpenMenu(menuItem.parent.slug)}
+                    onMouseLeave={() => menuItem.children.length > 0 && setOpenMenu(null)}
+                  >
+                    <Link href={`/${menuItem.parent.slug}`}>
+                      <span className="cursor-pointer hover:text-red-500 flex items-center">
+                        {menuItem.parent.menu_name}
+                        {menuItem.children.length > 0 && <ChevronDown className="ml-1 h-4 w-4" />}
+                      </span>
+                    </Link>
+                    {menuItem.children.length > 0 && openMenu === menuItem.parent.slug && (
+                      <div
+                        className="absolute left-0 w-48 bg-white rounded-md shadow-lg py-1 z-50"
+                        style={{ top: "100%", paddingTop: "10px" }}
+                      >
+                        <ul className="block">
+                          {menuItem.children.map((child) => (
+                            <li key={child.slug}>
+                              <Link href={`/${child.slug}`}>
+                                <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                  {child.menu_name}
+                                </span>
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -139,7 +142,11 @@ export default function Navbar({ menuData }: NavbarProps) {
 
           <div className="flex justify-center flex-1">
             {settings.showMobileLogo === 1 && (
-              <LogoMobile logoUrl={settings.logo_url} />
+              <Link href="/">
+                <span className="cursor-pointer">
+                  <LogoMobile logoUrl={settings.logo_url} />
+                </span>
+              </Link>
             )}
           </div>
 

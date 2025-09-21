@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { useSession } from "@/auth/SessionProvider";
-import UserIcon from "./userIcon";
+import { useSession } from '@/auth/SessionProvider';
+import UserIcon from './userIcon';
 
 interface UserIconContainerProps {
-  onIconClick?: () => void;
+  onLoggedOutClick?: () => void;
 }
 
-export default function UserIconContainer({ onIconClick }: UserIconContainerProps) {
+export default function UserIconContainer({ onLoggedOutClick }: UserIconContainerProps) {
   const { session } = useSession();
-  return <UserIcon isLoggedIn={session.isLoggedin} onIconClick={onIconClick} />;
+  return <UserIcon isLoggedIn={session.isLoggedin} onLoggedOutClick={onLoggedOutClick} />;
 }
