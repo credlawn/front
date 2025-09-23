@@ -9,8 +9,8 @@ import { getSiteSettings } from "@/get-api-data/settings";
 import { setSettings } from "@/redux/features/settings-slice";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
-import TopBannerPage from "@/models/topbanner";
-import { makeStore } from "@/redux/store"; // Changed import
+import TopBannerContainer from "@/models/topbanner"; // Corrected import
+import { makeStore } from "@/redux/store";
 import { ReduxProvider } from "@/redux/provider";
 
 const outfit = Outfit({
@@ -58,7 +58,7 @@ export default async function RootLayout({
       >
         <ReduxProvider preloadedState={preloadedState}> {/* Pass preloadedState */}
           <SessionProvider session={sessionData}>
-            <TopBannerPage />
+            <TopBannerContainer /> {/* Corrected usage */}
             <NavbarContainer />
             {!uid && <UIDGenerator />}
             {children}

@@ -1,27 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
-interface TopBannerProps {
-  background?: string;
-  boxShadowColor?: string;
-  href?: string;
-  banAnimation?: string;
-  messages?: string[];
-
-
-  heightMobile?: string;
-  heightDesktop?: string;
-  fontWeightMobile?: number;
-  fontWeightDesktop?: number;
-  fontSizeMobile?: number;
-  fontSizeDesktop?: number;
-  fontColorMobile?: string;
-  fontColorDesktop?: string;
-}
+import { TopBannerProps } from "@/types/topbanner";
 
 export default function TopBanner({
   background = "linear-gradient(90deg, rgba(255, 65, 108, 0.9) 0%, rgba(255, 75, 43, 0.9) 100%)",
-  href = "#",
+  url = "#", // Changed from href to url
   banAnimation = "zoom",
   messages = [],
   heightMobile = "h-8",
@@ -91,12 +74,12 @@ export default function TopBanner({
         background,
         height: mobileHeightValue,
       }}
-      href={href}
+      href={url}
     >
       {/* Inline style for desktop height */}
       <style>{`
         @media (min-width: 640px) {
-          a[href="${href}"] {
+          a[href="${url}"] {
             height: ${desktopHeightValue} !important;
           }
         }
