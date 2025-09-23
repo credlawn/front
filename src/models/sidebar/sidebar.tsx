@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
-import { MenuResponse } from "@/models/navbar/navbarApi";
-import { MappedSettings } from "../settings";
+import { MenuResponse, MenuItem } from "@/types/menu"; 
+
 import UserIconContainer from "@/icon/user";
 import { useSession } from "@/auth/SessionProvider";
 
@@ -12,21 +12,20 @@ interface SidebarProps {
   isOpen: boolean;
   onClose: () => void;
   menuData: MenuResponse[];
-  settings: MappedSettings;
 }
 
 export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const { session } = useSession();
+  
 
-  // Sort parents by parent_id and children by child_id
   const sortedMenuData = (menuData ?? [])
     .filter((item) => item.parent && item.parent.menu_name)
-    .sort((a, b) => (a.parent?.parent_id || 0) - (b.parent?.parent_id || 0))
+    .sort((a: MenuResponse, b: MenuResponse) => (a.parent?.parent_id || 0) - (b.parent?.parent_id || 0)) // Added types
     .map((item) => ({
       ...item,
       children: (item.children ?? []).sort(
-        (a, b) => (a.child_id || 0) - (b.child_id || 0),
+        (a: MenuItem, b: MenuItem) => (a.child_id || 0) - (b.child_id || 0),
       ),
     }));
 
@@ -88,7 +87,7 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
                     }`}
                   >
                     <ul>
-                      {item.children.map((child, index) => (
+                      {item.children.map((child: MenuItem, index: number) => (
                         <li
                           key={child.slug}
                           className={

@@ -1,21 +1,20 @@
 import Image from "next/image";
+import { LogoProps } from "@/types/logo";
 
-interface LogoProps {
-  logoUrl?: string | null;
-}
-
-export const Logo = ({ logoUrl }: LogoProps) => (
-  <div className="h-[36px] w-[120px] relative">
-    <Image
-      alt="wow-logo"
-      fill
-      sizes="120px"
-      className="object-contain"
-      src={logoUrl || "/images/placeholder.png"}
-      priority={true}
-    />
-  </div>
-);
+export const Logo = ({ logoUrl }: LogoProps) => {
+  return (
+    <div className="h-[36px] w-[120px] relative">
+      <Image
+        alt="wow-logo"
+        fill
+        sizes="120px"
+        className="object-contain"
+        src={logoUrl || "/images/placeholder.png"}
+        priority={true}
+      />
+    </div>
+  );
+};
 
 export const LogoSidebar = ({ logoUrl }: LogoProps) => (
   <div className="w-[100px] h-[48px] relative">

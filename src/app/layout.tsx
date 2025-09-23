@@ -5,11 +5,13 @@ import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
 import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
-import { getSiteSettings } from "@/models/settings/settingsApi";
-import { SettingsProvider } from "@/models/settings";
+import { getSiteSettings } from "@/get-api-data/settings";
+import { setSettings } from "@/redux/features/settings-slice";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
 import TopBannerPage from "@/models/topbanner";
+import { makeStore } from "@/redux/store"; // Changed import
+import { ReduxProvider } from "@/redux/provider";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -35,6 +37,13 @@ export default async function RootLayout({
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settings = await getSiteSettings();
 
+  // Create a new store instance for the server-side render
+  const store = makeStore();
+  // Dispatch settings to this server-side Redux store
+  store.dispatch(setSettings(settings));
+  // Get the preloaded state from the server-side store
+  const preloadedState = store.getState();
+
   const sessionData = {
     isLoggedin,
     user,
@@ -47,7 +56,7 @@ export default async function RootLayout({
       <body
         className={`${outfit.className} antialiased`}
       >
-        <SettingsProvider settings={settings}>
+        <ReduxProvider preloadedState={preloadedState}> {/* Pass preloadedState */}
           <SessionProvider session={sessionData}>
             <TopBannerPage />
             <NavbarContainer />
@@ -55,7 +64,7 @@ export default async function RootLayout({
             {children}
             <VisitorsRecord />
           </SessionProvider>
-        </SettingsProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import axios from "axios";
-import { MenuItem, MenuResponse } from "@/types/menu";
+import { MenuResponse } from "@/types/menu";
 
 export async function getMenuList(): Promise<MenuResponse[]> {
   try {

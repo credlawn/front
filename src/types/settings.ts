@@ -1,5 +1,3 @@
-import axiosInstance from "@/lib/axios";
-
 export interface SiteSettingsResponse {
   show_top_banner: number;
   show_mobile_logo: number;
@@ -41,14 +39,32 @@ export interface SiteSettingsResponse {
   lap_ft_size?: number;
 }
 
-
-export async function getSiteSettings() {
-  try {
-    const response = await axiosInstance.get("/api/method/myecom.api.site_settings.get_site_settings");
-    return response.data?.message || {};
-
-    
-  } catch {
-    return {};
-  }
+export interface MappedSettings {
+  
+  visitorTracking: number;
+  currency: string;
+  showMobileLogo: number;
+  autoSlideHero: number;
+  logo_url?: string;
+  cardSize?: number;
+  mobileCardSize?: number;
+  tabCardSize?: number;
+  imageSize?: number;
+  mobileImageSize?: number;
+  tabImageSize?: number;
+  cardBg?: string;
+  imageBg?: string;
+  textColor?: string;
+  priColor?: string;
+  secColor?: string;
+  thiColor?: string;
+  btn1Color?: string;
+  btn2Color?: string;
+  btn3Color?: string;
+  bt1Color?: string;
+  bt2Color?: string;
+  bt3Color?: string;
+  starColorPage?: string;
+  starColorCard?: string;
+  
 }

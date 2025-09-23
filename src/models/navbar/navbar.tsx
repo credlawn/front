@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MenuResponse } from "@/types/menu";
-import { useSettings } from "@/models/settings";
+import { useAppSelector } from "@/redux/store"; // New import
 import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
@@ -15,7 +15,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ menuData }: NavbarProps) {
-  const settings = useSettings();
+  const settings = useAppSelector((state) => state.settingsReducer); // Updated line
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -186,7 +186,6 @@ export default function Navbar({ menuData }: NavbarProps) {
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           menuData={menuData}
-          settings={settings}
         />
       </div>
     </header>

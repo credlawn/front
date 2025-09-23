@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { ArrowDownIcon } from 'lucide-react';
-import { MenuResponse } from "./navbarApi";
+import { MenuResponse, MenuItem } from "@/types/menu";
 
 interface NavItemsProps {
   menuData: MenuResponse[];
@@ -15,11 +15,11 @@ export function NavItems({ menuData }: NavItemsProps) {
 
   // Sort parents and children
   const sortedMenuData = menuData
-    .sort((a, b) => (a.parent.parent_id || 0) - (b.parent.parent_id || 0))
+    .sort((a: MenuResponse, b: MenuResponse) => (a.parent.parent_id || 0) - (b.parent.parent_id || 0)) // Added types
     .map((item) => ({
       ...item,
       children: item.children?.sort(
-        (a, b) => (a.child_id || 0) - (b.child_id || 0),
+        (a: MenuItem, b: MenuItem) => (a.child_id || 0) - (b.child_id || 0), // Added types
       ),
     }));
 
@@ -46,7 +46,7 @@ export function NavItems({ menuData }: NavItemsProps) {
               >
                 <div className="w-full rounded bg-white-a700_01 p-3 shadow">
                   <div className="flex flex-col gap-3">
-                    {menu.children.map((child) => (
+                    {menu.children.map((child: MenuItem) => ( // Added type
                       <Link
                         key={child.child_id}
                         className="self-center"
