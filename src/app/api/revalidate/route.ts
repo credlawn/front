@@ -24,11 +24,12 @@ export async function POST(request: NextRequest) {
     if (payload.id === 'Hero Section') {
       tagsToRevalidate.push('hero-data');
     }
-    if (payload.doctype === 'Product') {
-      tagsToRevalidate.push('product-data');
+    if (payload.id === 'My Menu') {
+      tagsToRevalidate.push('navbar-data');
     }
-    if (payload.doctype === 'Category') {
-      tagsToRevalidate.push('category-data');
+    
+    if (payload.id === 'Site Settings') {
+      tagsToRevalidate.push('site-settings');
     }
 
     if (tagsToRevalidate.length === 0) {

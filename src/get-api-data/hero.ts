@@ -23,6 +23,7 @@ export const getHeroDetails = unstable_cache(
   { tags: ['hero-data'] }
 );
 
+
 export const getHeroSettings = unstable_cache(
   async (): Promise<HeroSettings> => {
     try {
