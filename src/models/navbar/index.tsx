@@ -1,4 +1,4 @@
-import { getMenuList } from "./navbarApi";
+import { getMenuList } from "@/get-api-data/navbar";
 import Navbar from "./navbar";
 
 export default async function NavbarContainer() {

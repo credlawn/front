@@ -13,13 +13,12 @@ export function NavItems({ menuData }: NavItemsProps) {
     return null;
   }
 
-  // Sort parents and children
   const sortedMenuData = menuData
     .sort((a: MenuResponse, b: MenuResponse) => (a.parent.parent_id || 0) - (b.parent.parent_id || 0)) // Added types
     .map((item) => ({
       ...item,
       children: item.children?.sort(
-        (a: MenuItem, b: MenuItem) => (a.child_id || 0) - (b.child_id || 0), // Added types
+        (a: MenuItem, b: MenuItem) => (a.child_id || 0) - (b.child_id || 0), 
       ),
     }));
 
@@ -38,7 +37,6 @@ export function NavItems({ menuData }: NavItemsProps) {
               {menu.children && menu.children.length > 0 && <ArrowDownIcon />}
             </Link>
 
-            {/* Dropdown for children */}
             {menu.children && menu.children.length > 0 && (
               <div
                 className="invisible absolute left-1/2 z-[99] w-fit min-w-28 pt-3 opacity-0 transition-all duration-300 ease-in-out group-hover:visible group-hover:opacity-100"
@@ -46,7 +44,7 @@ export function NavItems({ menuData }: NavItemsProps) {
               >
                 <div className="w-full rounded bg-white-a700_01 p-3 shadow">
                   <div className="flex flex-col gap-3">
-                    {menu.children.map((child: MenuItem) => ( // Added type
+                    {menu.children.map((child: MenuItem) => ( 
                       <Link
                         key={child.child_id}
                         className="self-center"
