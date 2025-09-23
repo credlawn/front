@@ -1,19 +1,6 @@
 import axiosInstance from "@/lib/axios";
 import axios from "axios";
-
-export interface MenuItem {
-  menu_name: string;
-  parent_id?: number;
-  child_id?: number;
-  parent_name?: string;
-  menu_type: "Parent" | "Child";
-  slug: string;
-}
-
-export interface MenuResponse {
-  parent: MenuItem;
-  children: MenuItem[];
-}
+import { MenuItem, MenuResponse } from "@/types/menu";
 
 export async function getMenuList(): Promise<MenuResponse[]> {
   try {

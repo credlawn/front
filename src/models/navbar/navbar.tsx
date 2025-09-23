@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { MenuResponse } from "./navbarApi";
+import { MenuResponse } from "@/types/menu";
 import { useSettings } from "@/models/settings";
 import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";

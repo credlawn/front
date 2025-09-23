@@ -2,34 +2,21 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { HeroItem } from "./heroApi";
+import { HeroProps } from "@/types/hero";
 
-interface HeroProps {
-  heroData: HeroItem[];
-  autoSlide?: boolean;
-  // Color settings from the parent component
-  priColor?: string;
-  secColor?: string;
-  thiColor?: string;
-  btn1Color?: string;
-  btn2Color?: string;
-  bt1Color?: string;
-  bt2Color?: string;
-  currency?: string;
-}
+export default function Hero({ heroData, settings }: HeroProps) {
+  const {
+    autoSlide = true,
+    priColor = "#EF4444",
+    secColor = "#111827",
+    thiColor = "#374151",
+    btn1Color = "#EF4444",
+    btn2Color = "#DC2626",
+    bt1Color = "#FFFFFF",
+    bt2Color = "#FFFFFF",
+    currency = "₹"
+  } = settings;
 
-export default function Hero({ 
-  heroData, 
-  autoSlide = true,
-  priColor = "#EF4444", // red-500 as hex
-  secColor = "#111827", // gray-900 as hex
-  thiColor = "#374151", // gray-700 as hex
-  btn1Color = "#EF4444", // red-500 as hex
-  btn2Color = "#DC2626", // red-600 as hex
-  bt1Color = "#FFFFFF", // white as hex
-  bt2Color = "#FFFFFF", // white as hex
-  currency = "₹"
-}: HeroProps) {
   const [current, setCurrent] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
