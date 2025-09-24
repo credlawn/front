@@ -27,7 +27,9 @@ export const getBannerMessages = unstable_cache(
 export const getBannerSettings = unstable_cache(
   async () => {
     try {
-      const response = await api("banner_message.get_banner_settings");
+      const response = await api("banner_message.get_banner_settings", {
+        next: { revalidate: 0, tags: ['banner-settings'] },
+      });
 
       if (!response.ok) throw new Error("Failed to fetch banner settings");
 
@@ -39,5 +41,5 @@ export const getBannerSettings = unstable_cache(
     }
   },
   ["banner-settings"],
-  { tags: ['site-settings'] }
+  { tags: ['banner-settings'] }
 );

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
 import { checkCurrentUser } from '@/auth/login';
+import { mapSettings } from "@/redux/features/settings-slice";
 import { getSiteSettings } from "@/get-api-data/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
@@ -32,7 +33,8 @@ export default async function RootLayout({
   const sid = cookieStore.get('sid')?.value;
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
-  const settings = await getSiteSettings();
+  const settingsData = await getSiteSettings();
+  const settings = mapSettings(settingsData);
 
   const sessionData = {
     isLoggedin,

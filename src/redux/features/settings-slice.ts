@@ -29,37 +29,42 @@ const initialState: MappedSettings = {
   starColorCard: '#f51818',
 };
 
+
+export const mapSettings = (settings: SiteSettingsResponse): MappedSettings => ({
+  visitorTracking: settings.visitor_tracking ?? 0,
+  currency: settings.currency ?? '₹',
+  showMobileLogo: settings.show_mobile_logo ?? 1,
+  autoSlideHero: settings.auto_slide_hero ?? 1,
+  logo_url: settings.logo_url ?? '',
+  cardSize: settings.card_size ?? 72,
+  mobileCardSize: settings.mobile_card_size ?? 72,
+  tabCardSize: settings.tab_card_size ?? 72,
+  imageSize: settings.image_size ?? 56,
+  mobileImageSize: settings.mobile_image_size ?? 56,
+  tabImageSize: settings.tab_image_size ?? 56,
+  cardBg: settings.card_bg ?? 'white',
+  imageBg: settings.image_bg ?? 'transparent',
+  textColor: settings.text_color ?? 'black',
+  priColor: settings.primary_color ?? 'red-500',
+  secColor: settings.secondary_color ?? 'natural-900',
+  thiColor: settings.third_color ?? 'red-500',
+  btn1Color: settings.button_1_color ?? 'red-500',
+  btn2Color: settings.button_2_color ?? 'green-600',
+  btn3Color: settings.button_3_color ?? 'blue-500',
+  bt1Color: settings.bt_1_color ?? 'natural-900',
+  bt2Color: settings.bt_2_color ?? 'white',
+  bt3Color: settings.bt_3_color ?? 'blue',
+  starColorPage: settings.star_color_2 ?? '#f51818',
+  starColorCard: settings.star_color_1 ?? '#f51818',
+});
+
 export const settingsSlice = createSlice({
   name: "settings",
   initialState,
   reducers: {
     setSettings: (state, action: PayloadAction<SiteSettingsResponse>) => {
-      const settings = action.payload;
-      state.visitorTracking = settings.visitor_tracking ?? 0;
-      state.currency = settings.currency ?? '₹';
-      state.showMobileLogo = settings.show_mobile_logo ?? 1;
-      state.autoSlideHero = settings.auto_slide_hero ?? 1;
-      state.logo_url = settings.logo_url ?? '';
-      state.cardSize = settings.card_size ?? 72;
-      state.mobileCardSize = settings.mobile_card_size ?? 72;
-      state.tabCardSize = settings.tab_card_size ?? 72;
-      state.imageSize = settings.image_size ?? 56;
-      state.mobileImageSize = settings.mobile_image_size ?? 56;
-      state.tabImageSize = settings.tab_image_size ?? 56;
-      state.cardBg = settings.card_bg ?? 'white';
-      state.imageBg = settings.image_bg ?? 'transparent';
-      state.textColor = settings.text_color ?? 'black';
-      state.priColor = settings.primary_color ?? 'red-500';
-      state.secColor = settings.secondary_color ?? 'natural-900';
-      state.thiColor = settings.third_color ?? 'red-500';
-      state.btn1Color = settings.button_1_color ?? 'red-500';
-      state.btn2Color = settings.button_2_color ?? 'green-600';
-      state.btn3Color = settings.button_3_color ?? 'blue-500';
-      state.bt1Color = settings.bt_1_color ?? 'natural-900';
-      state.bt2Color = settings.bt_2_color ?? 'white';
-      state.bt3Color = settings.bt_3_color ?? 'blue';
-      state.starColorPage = settings.star_color_2 ?? '#f51818';
-      state.starColorCard = settings.star_color_1 ?? '#f51818';
+      const mappedSettings = mapSettings(action.payload);
+      Object.assign(state, mappedSettings);
     },
   },
 });

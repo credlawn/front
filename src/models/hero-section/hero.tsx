@@ -6,14 +6,14 @@ import { HeroProps } from "@/types/hero";
 
 export default function Hero({ heroData, settings }: HeroProps) {
   const {
-    autoSlide = true,
-    priColor = "#EF4444",
-    secColor = "#111827",
-    thiColor = "#374151",
-    btn1Color = "#EF4444",
-    btn2Color = "#DC2626",
-    bt1Color = "#FFFFFF",
-    bt2Color = "#FFFFFF",
+    auto_slide_hero: autoSlide = false,
+    primary_color: priColor = "#EF4444",
+    secondary_color: secColor = "#111827",
+    third_color: thiColor = "#374151",
+    button_1_color: btn1Color = "#EF4444",
+    button_2_color: btn2Color = "#DC2626",
+    bt_1_color: bt1Color = "#FFFFFF",
+    bt_2_color: bt2Color = "#FFFFFF",
     currency = "₹"
   } = settings;
 

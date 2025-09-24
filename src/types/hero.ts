@@ -10,14 +10,14 @@ export interface HeroItem {
 }
 
 export interface HeroSettings {
-  autoSlide?: boolean;
-  priColor?: string;
-  secColor?: string;
-  thiColor?: string;
-  btn1Color?: string;
-  btn2Color?: string;
-  bt1Color?: string;
-  bt2Color?: string;
+  auto_slide_hero?: boolean;
+  primary_color?: string;
+  secondary_color?: string;
+  third_color?: string;
+  button_1_color?: string;
+  button_2_color?: string;
+  bt_1_color?: string;
+  bt_2_color?: string;
   currency?: string;
 }
 

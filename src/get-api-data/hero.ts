@@ -5,7 +5,9 @@ import { unstable_cache } from "next/cache";
 export const getHeroDetails = unstable_cache(
   async (): Promise<HeroItem[]> => {
     try {
-      const response = await api("hero_section.get_hero_details");
+      const response = await api("hero_section.get_hero_details", {
+        next: { revalidate: 0, tags: ['hero-data'] }, 
+      });
 
       if (!response.ok) throw new Error("Failed to fetch hero details");
 
@@ -29,7 +31,10 @@ export const getHeroDetails = unstable_cache(
 export const getHeroSettings = unstable_cache(
   async (): Promise<HeroSettings> => {
     try {
-      const response = await api("hero_section.get_hero_settings");
+      const response = await api("hero_section.get_hero_settings", {
+        next: { revalidate: 0, tags: ['hero-settings'] }, 
+
+      });
 
       if (!response.ok) throw new Error("Failed to fetch hero settings");
 
@@ -41,5 +46,5 @@ export const getHeroSettings = unstable_cache(
     }
   },
   ['hero-settings'],
-  { tags: ['hero-data'] }
+  { tags: ['hero-settings'] }
 );

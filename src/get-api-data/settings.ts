@@ -4,7 +4,9 @@ import { unstable_cache } from "next/cache";
 export const getSiteSettings = unstable_cache(
   async () => {
     try {
-      const response = await api("site_settings.get_site_settings");
+      const response = await api("site_settings.get_site_settings", {
+        next: { revalidate: 0, tags: ['site-settings'] }, 
+      });
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
