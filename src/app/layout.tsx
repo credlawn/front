@@ -8,7 +8,6 @@ import { getSiteSettings } from "@/get-api-data/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
 import TopBannerContainer from "@/models/topbanner"; // Corrected import
-import { makeStore } from "@/redux/store";
 import { ReduxProvider } from "@/redux/provider";
 
 const outfit = Outfit({
@@ -47,8 +46,6 @@ export default async function RootLayout({
     session: sessionData,
   }
 
-  // Create a new store instance for the server-side render
-  const store = makeStore(preloadedState);
 
   return (
     <html lang="en">
