@@ -1,12 +1,12 @@
 "use client";
 
 import { loginUser } from "@/auth/login";
+import { useRefreshSession } from "@/auth/session";
 import { setSession } from "@/auth/setSession";
-import { useSession } from "@/auth/SessionProvider";
 import { useState } from "react";
 
 const LoginForm = ({ onLoginSuccess, onSignupClick }: { onLoginSuccess?: () => void, onSignupClick?: () => void }) => {
-  const { refreshSession } = useSession();
+  const refreshSession = useRefreshSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -21,7 +21,9 @@ const LoginForm = ({ onLoginSuccess, onSignupClick }: { onLoginSuccess?: () => v
 
     const result = await loginUser({ email, password });
     if (result.success) {
-      if (result.sid) await setSession(result.sid);
+      if (result.sid) {
+        await setSession(result.sid);
+      }
       setSuccess("Login successful!");
       setEmail("");
       setPassword("");

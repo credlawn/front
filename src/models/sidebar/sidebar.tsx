@@ -5,7 +5,7 @@ import { ChevronDownIcon } from "lucide-react";
 import { MenuResponse, MenuItem } from "@/types/menu"; 
 
 import UserIconContainer from "@/icon/user";
-import { useSession } from "@/auth/SessionProvider";
+import { useSession } from "@/auth/session";
 
 
 interface SidebarProps {
@@ -16,7 +16,7 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
-  const { session } = useSession();
+  const session = useSession();
   
 
   const sortedMenuData = (menuData ?? [])

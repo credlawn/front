@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSession } from '@/auth/SessionProvider';
+import { useSession } from '@/auth/session';
 import { recordVisitorAction, updateSessionAction } from '@/auth/visitorActions';
 
 export default function VisitorsRecord() {
-  const { session } = useSession();
+  const session = useSession();
   const visitStartTime = useRef(Date.now());
   const isInitialLoad = useRef(true);
 

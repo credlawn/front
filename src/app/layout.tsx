@@ -3,10 +3,8 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
-import { SessionProvider } from '@/auth/SessionProvider';
 import { checkCurrentUser } from '@/auth/login';
 import { getSiteSettings } from "@/get-api-data/settings";
-import { setSettings } from "@/redux/features/settings-slice";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
 import TopBannerContainer from "@/models/topbanner"; // Corrected import
@@ -37,13 +35,6 @@ export default async function RootLayout({
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settings = await getSiteSettings();
 
-  // Create a new store instance for the server-side render
-  const store = makeStore();
-  // Dispatch settings to this server-side Redux store
-  store.dispatch(setSettings(settings));
-  // Get the preloaded state from the server-side store
-  const preloadedState = store.getState();
-
   const sessionData = {
     isLoggedin,
     user,
@@ -51,19 +42,25 @@ export default async function RootLayout({
     uid,
   };
 
+  const preloadedState = {
+    settingsReducer: settings,
+    session: sessionData,
+  }
+
+  // Create a new store instance for the server-side render
+  const store = makeStore(preloadedState);
+
   return (
     <html lang="en">
       <body
         className={`${outfit.className} antialiased`}
       >
         <ReduxProvider preloadedState={preloadedState}> {/* Pass preloadedState */}
-          <SessionProvider session={sessionData}>
-            <TopBannerContainer /> {/* Corrected usage */}
-            <NavbarContainer />
-            {!uid && <UIDGenerator />}
-            {children}
-            <VisitorsRecord />
-          </SessionProvider>
+          <TopBannerContainer /> {/* Corrected usage */}
+          <NavbarContainer />
+          {!uid && <UIDGenerator />}
+          {children}
+          <VisitorsRecord />
         </ReduxProvider>
       </body>
     </html>
