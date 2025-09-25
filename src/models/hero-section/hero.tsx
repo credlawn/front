@@ -6,14 +6,14 @@ import { HeroProps } from "@/types/hero";
 
 export default function Hero({ heroData, settings }: HeroProps) {
   const {
-    auto_slide_hero: autoSlide = false,
-    primary_color: priColor = "#EF4444",
-    secondary_color: secColor = "#111827",
-    third_color: thiColor = "#374151",
-    button_1_color: btn1Color = "#EF4444",
-    button_2_color: btn2Color = "#DC2626",
-    bt_1_color: bt1Color = "#FFFFFF",
-    bt_2_color: bt2Color = "#FFFFFF",
+    autoSlideHero = false,
+    primaryColor = "#EF4444",
+    secondaryColor = "#111827",
+    thirdColor = "#374151",
+    button1Color = "#EF4444",
+    button2Color = "#DC2626",
+    button1TextColor = "#FFFFFF",
+    button2TextColor = "#FFFFFF",
     currency = "₹"
   } = settings;
 
@@ -22,7 +22,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    if (!autoSlide || heroData.length === 0) return;
+    if (!autoSlideHero || heroData.length === 0) return;
 
     setProgress(0);
     const progressInterval = setInterval(() => {
@@ -37,7 +37,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
       clearInterval(progressInterval);
       clearTimeout(slideTimer);
     };
-  }, [current, heroData, autoSlide]);
+  }, [current, heroData, autoSlideHero]);
 
   if (heroData.length === 0) return null;
 
@@ -56,11 +56,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
             <div className="absolute inset-0 px-2 py-2 md:px-2 lg:px-2">
               <div className="relative w-full h-full rounded-lg overflow-hidden">
                 <Image
-                  src={
-                    slide.hero_image.startsWith("http")
-                      ? slide.hero_image
-                      : `${process.env.DOMAIN}${slide.hero_image}`
-                  }
+                  src={slide.hero_image}
                   alt={slide.image_alt}
                   fill
                   loading="lazy"
@@ -72,7 +68,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
                   {/* Semi heading with priColor */}
                   <p 
                     className="text-sm font-medium tracking-widest mb-2"
-                    style={{ color: priColor }}
+                    style={{ color: primaryColor }}
                   >
                     {slide.hero_subtitle}
                   </p>
@@ -80,16 +76,16 @@ export default function Hero({ heroData, settings }: HeroProps) {
                   {/* Heading with secColor */}
                   <h2 
                     className="text-2xl md:text-4xl font-bold leading-tight mb-2"
-                    style={{ color: secColor }}
+                    style={{ color: secondaryColor }}
                   >
                     {slide.hero_title}
                   </h2>
                   
                   {/* Price with textColor and dynamic currency */}
                   <p className="hidden md:block mb-2">
-                    <span style={{ color: secColor }}>
+                    <span style={{ color: secondaryColor }}>
                       {slide.price_text}{" "}
-                      <b style={{ color: thiColor }}>
+                      <b style={{ color: thirdColor }}>
                         {currency} {slide.price}
                       </b>
                     </span>
@@ -97,15 +93,11 @@ export default function Hero({ heroData, settings }: HeroProps) {
                   
                   {/* Button with hover effects */}
                   <a
-                    href={
-                      slide.hero_url.startsWith("http")
-                        ? slide.hero_url
-                        : `${process.env.DOMAIN}${slide.hero_url}`
-                    }
+                    href={slide.hero_url}
                     className="inline-block text-sm font-semibold px-4 py-2 rounded-md transition"
                     style={{
-                      backgroundColor: isHovered ? btn2Color : btn1Color,
-                      color: isHovered ? bt2Color : bt1Color
+                      backgroundColor: isHovered ? button2Color : button1Color,
+                      color: isHovered ? button2TextColor : button1TextColor
                     }}
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
