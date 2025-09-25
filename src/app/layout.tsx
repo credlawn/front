@@ -4,7 +4,6 @@ import "./globals.css";
 import { cookies } from 'next/headers';
 import UIDGenerator from '@/auth/tracking';
 import { checkCurrentUser } from '@/auth/login';
-import { mapSettings } from "@/redux/features/settings-slice";
 import { getSiteSettings } from "@/get-api-data/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
@@ -34,7 +33,6 @@ export default async function RootLayout({
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settingsData = await getSiteSettings();
-  const settings = mapSettings(settingsData);
 
   const sessionData = {
     isLoggedin,
@@ -44,7 +42,7 @@ export default async function RootLayout({
   };
 
   const preloadedState = {
-    settingsReducer: settings,
+    settingsReducer: settingsData,
     session: sessionData,
   }
 
@@ -54,8 +52,8 @@ export default async function RootLayout({
       <body
         className={`${outfit.className} antialiased`}
       >
-        <ReduxProvider preloadedState={preloadedState}> {/* Pass preloadedState */}
-          <TopBannerContainer /> {/* Corrected usage */}
+        <ReduxProvider preloadedState={preloadedState}> 
+          <TopBannerContainer /> 
           <NavbarContainer />
           {!uid && <UIDGenerator />}
           {children}

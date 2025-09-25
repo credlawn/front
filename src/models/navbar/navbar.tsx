@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MenuResponse } from "@/types/menu";
-import { useAppSelector } from "@/redux/store"; // New import
+import { useAppSelector } from "@/redux/store"; 
 import { Logo, LogoMobile } from "../logo/logo";
 import SearchBox from "../searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
@@ -15,7 +15,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ menuData }: NavbarProps) {
-  const settings = useAppSelector((state) => state.settingsReducer); // Updated line
+  const settings = useAppSelector((state) => state.settingsReducer); 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -70,7 +70,7 @@ export default function Navbar({ menuData }: NavbarProps) {
           <div className="flex-shrink-0">
             <Link href="/">
               <span className="cursor-pointer">
-                <Logo logoUrl={settings.logo_url} />
+                <Logo logoUrl={settings.logoUrl} />
               </span>
             </Link>
           </div>
@@ -144,7 +144,7 @@ export default function Navbar({ menuData }: NavbarProps) {
             {settings.showMobileLogo === 1 && (
               <Link href="/">
                 <span className="cursor-pointer">
-                  <LogoMobile logoUrl={settings.logo_url} />
+                  <LogoMobile logoUrl={settings.logoUrl} />
                 </span>
               </Link>
             )}

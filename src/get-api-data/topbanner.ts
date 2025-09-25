@@ -1,3 +1,4 @@
+
 import { api } from "@/lib/fetch";
 import { BannerMessage } from "@/types/topbanner";
 import { unstable_cache } from "next/cache";
@@ -22,24 +23,4 @@ export const getBannerMessages = unstable_cache(
   },
   ["banner-messages"],
   { tags: ['banner-messages'] }
-);
-
-export const getBannerSettings = unstable_cache(
-  async () => {
-    try {
-      const response = await api("banner_message.get_banner_settings", {
-        next: { revalidate: 0, tags: ['banner-settings'] },
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch banner settings");
-
-      const data = await response.json();
-      return data?.message || {};
-    } catch (error) {
-      console.error("getBannerSettings failed:", error);
-      return {};
-    }
-  },
-  ["banner-settings"],
-  { tags: ['banner-settings'] }
 );

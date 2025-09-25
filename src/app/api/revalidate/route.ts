@@ -30,8 +30,6 @@ export async function POST(request: NextRequest) {
     
     if (payload.id === 'Site Settings') {
       tagsToRevalidate.push('site-settings');
-      tagsToRevalidate.push('hero-settings');
-      tagsToRevalidate.push('banner-settings');
     }
 
     if (tagsToRevalidate.length === 0) {
