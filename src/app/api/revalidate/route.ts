@@ -32,6 +32,10 @@ export async function POST(request: NextRequest) {
       tagsToRevalidate.push('site-settings');
     }
 
+    if (payload.id === 'Category') {
+      tagsToRevalidate.push('category-data');
+    }
+
     if (tagsToRevalidate.length === 0) {
       return NextResponse.json({ message: 'No matching tags to revalidate for this payload' }, { status: 200 });
     }

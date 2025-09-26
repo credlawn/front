@@ -9,6 +9,7 @@ import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/models/navbar";
 import TopBannerContainer from "@/models/topbanner"; // Corrected import
 import { ReduxProvider } from "@/redux/provider";
+import PreLoader from "@/components/common/PreLoader";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default async function RootLayout({
       <body
         className={`${outfit.className} antialiased`}
       >
+        <PreLoader color={settingsData.primaryColor} />
         <ReduxProvider preloadedState={preloadedState}> 
           <TopBannerContainer /> 
           <NavbarContainer />
