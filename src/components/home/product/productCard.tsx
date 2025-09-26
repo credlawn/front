@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
+import WishlistButton from "@/components/wishlist/WishlistButton";
 
 
 interface ProductCardProps {
@@ -122,7 +123,15 @@ export default function ProductCard({
             </span>
           </div>
         </div>
-        
+        <div className="absolute bottom-2 right-2">
+          <WishlistButton 
+            productId={product.name}
+            productName={product.productName}
+            productImage={product.productImage1 || "/images/placeholder.jpg"}
+            price={discountedPriceAsNumber || priceAsNumber}
+            slug={product.productSlug}
+          />
+        </div>
       </div>
 
       {/* Desktop View */}
@@ -172,27 +181,21 @@ export default function ProductCard({
                           ({p.rating_count})
                       </span>
                   </div>
-                  <div className="flex items-center gap-2 text-[15px] text-neutral-900">
-                      <p className="font-bold">
-                          {currency}
-                          {formatInr(p.price)}
-                      </p>
-                      {p.oldPrice && p.discountPercent > 0 ? (
-                          <>
-                              <del className="text-gray-500">
-                                  {currency}
-                                  {formatInr(p.oldPrice)}
-                              </del>
-                              <span className="text-green-600 text-base font-medium ml-2 whitespace-nowrap">
-                                  {p.discountPercent.toFixed(0)}% off
-                              </span>
-                          </>
-                      ) : (
-                          <span className="text-green-500 text-base font-normal ml-2 whitespace-nowrap">
-                              {p.ndText}
-                          </span>
-                      )}
-                  </div>
+            <div className="flex items-center justify-between">
+              <p className="text-lg font-bold text-gray-900">${product.price}</p>
+              <div className="flex items-center space-x-2">
+                <WishlistButton 
+                  productId={product.name}
+                  productName={product.productName}
+                  productImage={product.productImage1 || "/images/placeholder.jpg"}
+                  price={discountedPriceAsNumber || priceAsNumber}
+                  slug={product.productSlug}
+                />
+                <button className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                  Add to Cart
+                </button>
+              </div>
+            </div>
               </div>
               
           </div>

@@ -7,6 +7,7 @@ import { useAppSelector } from "@/redux/store";
 import { Logo, LogoMobile } from "@/components/header/logo/logo";
 import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
+import { selectWishlistItems } from "@/redux/features/wishlist-slice";
 import { HeartIcon, ShoppingCartIcon, MenuIcon, SearchIcon, ChevronDown } from "lucide-react";
 import Sidebar from "@/components/header/sidebar/sidebar";
 
@@ -16,6 +17,8 @@ interface NavbarProps {
 
 export default function Navbar({ menuData }: NavbarProps) {
   const settings = useAppSelector((state) => state.settingsReducer); 
+  const wishlistItems = useAppSelector(selectWishlistItems);
+  const wishlistCount = wishlistItems.length; 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -118,6 +121,11 @@ export default function Navbar({ menuData }: NavbarProps) {
             <div className="flex items-center gap-6">
               <button className="relative hover:text-red-500 transition-colors cursor-pointer">
                 <HeartIcon />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
               </button>
               <UserIconContainer />
               <button className="relative hover:text-red-500 transition-colors cursor-pointer">
@@ -161,6 +169,11 @@ export default function Navbar({ menuData }: NavbarProps) {
             </button>
             <button className="relative hover:text-red-500 transition-colors cursor-pointer">
               <HeartIcon />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
             </button>
             <button className="relative hover:text-red-500 transition-colors cursor-pointer">
               <ShoppingCartIcon />
