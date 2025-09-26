@@ -6,10 +6,10 @@ import UIDGenerator from '@/auth/tracking';
 import { checkCurrentUser } from '@/auth/login';
 import { getSiteSettings } from "@/get-api-data/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
-import NavbarContainer from "@/models/navbar";
-import TopBannerContainer from "@/models/topbanner"; // Corrected import
+import NavbarContainer from "@/components/home/navbar";
+import  TopBannerContainer  from "@/components/home/topbanner";
 import { ReduxProvider } from "@/redux/provider";
-import PreLoader from "@/components/common/PreLoader";
+import  PreLoader  from "@/components/common/PreLoader";
 
 const outfit = Outfit({
   subsets: ["latin"],

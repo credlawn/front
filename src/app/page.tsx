@@ -1,13 +1,13 @@
 
 
-import HeroContainer from "@/models/hero-section";
-import CategorySection from "@/models/category";
+import HeroContainer from "@/components/home/hero-section";
+import CategoryContainer from "@/components/home/category";
 
 export default function Page() {
   return (
     <div>
       <HeroContainer />
-      <CategorySection />
+      <CategoryContainer />
 
 
     </div>

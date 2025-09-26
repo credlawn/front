@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  env: {
+    BASE_URL: process.env.BASE_URL,
+    API_PATH: process.env.API_PATH,
+  },
   images: {
     remotePatterns: [
       {

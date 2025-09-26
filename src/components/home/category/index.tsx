@@ -2,7 +2,7 @@ import { getCategoryList } from "@/get-api-data/category";
 import { getSiteSettings } from "@/get-api-data/settings";
 import Category from "./category";
 
-export default async function CategorySection() {
+export default async function CategoryContainer() {
   const [categoryData, settings] = await Promise.all([
     getCategoryList(),
     getSiteSettings(),
