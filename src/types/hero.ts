@@ -1,14 +1,14 @@
 import { SiteSettings } from "./settings";
 
 export interface HeroItem {
-  hero_title: string;
-  hero_subtitle: string;
-  price_text: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  priceText: string;
   price: string;
-  hero_image: string;
-  image_alt: string;
-  hero_url: string;
-  button_text: string;
+  heroImage: string;
+  imageAlt: string;
+  heroUrl: string;
+  buttonText: string;
 }
 
 export interface HeroProps {

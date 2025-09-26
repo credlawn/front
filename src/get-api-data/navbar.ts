@@ -15,10 +15,10 @@ export const getMenuList = unstable_cache(
       }
 
       const data = await response.json();
-      return data.message?.menu || [];
+      return data.message || [];
     } catch (error) {
       console.error("Error fetching menu list:", error);
-      throw error;
+      return [];
     }
   },
   ["navbar-data"],

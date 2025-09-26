@@ -20,12 +20,12 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
   
 
   const sortedMenuData = (menuData ?? [])
-    .filter((item) => item.parent && item.parent.menu_name)
-    .sort((a: MenuResponse, b: MenuResponse) => (a.parent?.parent_id || 0) - (b.parent?.parent_id || 0)) // Added types
+    .filter((item) => item.parent && item.parent.menuName)
+    .sort((a: MenuResponse, b: MenuResponse) => (a.parent?.parentId || 0) - (b.parent?.parentId || 0)) 
     .map((item) => ({
       ...item,
       children: (item.children ?? []).sort(
-        (a: MenuItem, b: MenuItem) => (a.child_id || 0) - (b.child_id || 0),
+        (a: MenuItem, b: MenuItem) => (a.childId || 0) - (b.childId || 0),
       ),
     }));
 
@@ -57,14 +57,14 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
                 {item.children.length > 0 ? (
                   <button
                     className="flex w-full items-center justify-between pb-3 pr-3 pt-2 cursor-pointer"
-                    onClick={() => toggleMenu(item.parent.menu_name)}
+                    onClick={() => toggleMenu(item.parent.menuName)}
                   >
                     <h4 className="text-base capitalize !leading-tight text-gray-900 font-semibold">
-                      {item.parent.menu_name}
+                      {item.parent.menuName}
                     </h4>
                     <ChevronDownIcon
                       className={`mt-0.5 h-3 w-3 transition-transform duration-300 ${
-                        openMenu === item.parent.menu_name ? "rotate-180" : ""
+                        openMenu === item.parent.menuName ? "rotate-180" : ""
                       }`}
                     />
                   </button>
@@ -74,7 +74,7 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
                     href={`/${item.parent.slug}`}
                   >
                     <h4 className="text-base capitalize !leading-tight text-gray-900 font-semibold">
-                      {item.parent.menu_name}
+                      {item.parent.menuName}
                     </h4>
                   </a>
                 )}
@@ -83,7 +83,7 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
                 {item.children.length > 0 && (
                   <div
                     className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      openMenu === item.parent.menu_name ? "h-auto" : "h-0"
+                      openMenu === item.parent.menuName ? "h-auto" : "h-0"
                     }`}
                   >
                     <ul>
@@ -101,7 +101,7 @@ export default function Sidebar({ isOpen, onClose, menuData }: SidebarProps) {
                             href={`/${child.slug}`}
                           >
                             <p className="text-sm font-normal !leading-tight text-gray-900 capitalize">
-                              {child.menu_name}
+                              {child.menuName}
                             </p>
                           </a>
                         </li>

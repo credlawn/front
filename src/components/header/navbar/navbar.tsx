@@ -85,7 +85,7 @@ export default function Navbar({ menuData }: NavbarProps) {
                   >
                     <Link href={`/${menuItem.parent.slug}`}>
                       <span className="cursor-pointer hover:text-red-500 flex items-center">
-                        {menuItem.parent.menu_name}
+                        {menuItem.parent.menuName}
                         {menuItem.children.length > 0 && <ChevronDown className="ml-1 h-4 w-4" />}
                       </span>
                     </Link>
@@ -99,7 +99,7 @@ export default function Navbar({ menuData }: NavbarProps) {
                             <li key={child.slug}>
                               <Link href={`/${child.slug}`}>
                                 <span className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                  {child.menu_name}
+                                  {child.menuName}
                                 </span>
                               </Link>
                             </li>

@@ -12,13 +12,9 @@ export const getHeroDetails = unstable_cache(
       if (!response.ok) throw new Error("Failed to fetch hero details");
 
       const data = await response.json();
-      const messages: HeroItem[] = data.message?.messages || [];
+      const messages: HeroItem[] = data.message || [];
 
-      return messages.map((item: HeroItem) => ({
-        ...item,
-        hero_image: item.hero_image,
-        hero_url: item.hero_url,
-      }));
+      return messages;
     } catch (error) {
       console.error("Error fetching hero details:", error);
       return [];

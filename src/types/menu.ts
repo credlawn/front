@@ -1,9 +1,9 @@
 export interface MenuItem {
-  menu_name: string;
-  parent_id?: number;
-  child_id?: number;
-  parent_name?: string;
-  menu_type: "Parent" | "Child";
+  menuName: string;
+  parentId?: number;
+  childId?: number;
+  parentName?: string;
+  menuType: "Parent" | "Child";
   slug: string;
 }
 

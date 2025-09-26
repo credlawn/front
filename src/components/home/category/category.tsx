@@ -30,7 +30,7 @@ export default function Category({
       <ul className="flex gap-6 overflow-x-auto no-scrollbar px-4 md:justify-center">
         {categoryData.map((cat) => (
           <li
-            key={cat.category_name}
+            key={cat.categoryName}
             className="group relative flex-shrink-0 flex flex-col items-center cursor-pointer rounded-xl border shadow-sm hover:shadow-md transition"
             style={{
               width: cardSize + 16,
@@ -56,8 +56,8 @@ export default function Category({
               }}
             >
               <Image
-                src={cat.category_image}
-                alt={cat.category_name}
+                src={cat.categoryImage}
+                alt={cat.categoryName}
                 width={imageSize}
                 height={imageSize}
                 className="object-contain transition-transform duration-500 ease-out group-hover:scale-105"
@@ -70,7 +70,7 @@ export default function Category({
               className="mt-1 text-sm font-medium relative z-10"
               style={{ color: textColor }}
             >
-              {cat.category_name}
+              {cat.categoryName}
             </span>
           </li>
         ))}

@@ -56,8 +56,8 @@ export default function Hero({ heroData, settings }: HeroProps) {
             <div className="absolute inset-0 px-2 py-2 md:px-2 lg:px-2">
               <div className="relative w-full h-full rounded-lg overflow-hidden">
                 <Image
-                  src={slide.hero_image}
-                  alt={slide.image_alt}
+                  src={slide.heroImage}
+                  alt={slide.imageAlt}
                   fill
                   loading="lazy"
                   className="object-cover object-top-right"
@@ -70,7 +70,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
                     className="text-sm font-medium tracking-widest mb-2"
                     style={{ color: primaryColor }}
                   >
-                    {slide.hero_subtitle}
+                    {slide.heroSubtitle}
                   </p>
                   
                   {/* Heading with secColor */}
@@ -78,13 +78,13 @@ export default function Hero({ heroData, settings }: HeroProps) {
                     className="text-2xl md:text-4xl font-bold leading-tight mb-2"
                     style={{ color: secondaryColor }}
                   >
-                    {slide.hero_title}
+                    {slide.heroTitle}
                   </h2>
                   
                   {/* Price with textColor and dynamic currency */}
                   <p className="hidden md:block mb-2">
                     <span style={{ color: secondaryColor }}>
-                      {slide.price_text}{" "}
+                      {slide.priceText}{" "}
                       <b style={{ color: thirdColor }}>
                         {currency} {slide.price}
                       </b>
@@ -93,7 +93,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
                   
                   {/* Button with hover effects */}
                   <a
-                    href={slide.hero_url}
+                    href={slide.heroUrl}
                     className="inline-block text-sm font-semibold px-4 py-2 rounded-md transition"
                     style={{
                       backgroundColor: isHovered ? button2Color : button1Color,
@@ -102,7 +102,7 @@ export default function Hero({ heroData, settings }: HeroProps) {
                     onMouseEnter={() => setIsHovered(true)}
                     onMouseLeave={() => setIsHovered(false)}
                   >
-                    {slide.button_text || "Shop now"}
+                    {slide.buttonText || "Shop now"}
                   </a>
                 </div>
               </div>
