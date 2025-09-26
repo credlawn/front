@@ -11,10 +11,10 @@ export const getBannerMessages = unstable_cache(
       if (!response.ok) throw new Error("Failed to fetch banner messages");
 
       const data = await response.json();
-      const messagesArray: BannerMessage[] = data?.message?.messages || [];
+      const messagesArray: BannerMessage[] = data?.message || [];
 
       return messagesArray
-        .map((msg) => msg.banner_message)
+        .map((msg) => msg.bannerMessage)
         .filter((msg) => msg && msg.trim() !== "");
     } catch (error) {
       console.error("getBannerMessages failed:", error);

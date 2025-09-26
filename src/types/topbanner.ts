@@ -1,5 +1,5 @@
 export interface BannerMessage {
-  banner_message: string;
+  bannerMessage: string;
 }
 
 export interface TopBannerProps {
