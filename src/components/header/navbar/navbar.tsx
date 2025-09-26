@@ -4,11 +4,11 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { MenuResponse } from "@/types/menu";
 import { useAppSelector } from "@/redux/store"; 
-import { Logo, LogoMobile } from "@/components/home/logo/logo";
-import SearchBox from "@/components/home/searchbox/searchBox";
+import { Logo, LogoMobile } from "@/components/header/logo/logo";
+import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
 import { HeartIcon, ShoppingCartIcon, MenuIcon, SearchIcon, ChevronDown } from "lucide-react";
-import Sidebar from "@/components/home/sidebar/sidebar";
+import Sidebar from "@/components/header/sidebar/sidebar";
 
 interface NavbarProps {
   menuData: MenuResponse[];
