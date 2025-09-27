@@ -67,7 +67,7 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
   return (
     <div className="py-2 px-3 border-b">
       {/* Mobile View */}
-      <div className="md:hidden">
+      <div className="md:hidden flex flex-col">
         <div className="flex items-start gap-4">
           <div className="relative w-16 h-16 flex-shrink-0">
             <Image
@@ -100,28 +100,30 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
               )}
               {currency}{(item.price * item.qty).toFixed(0)}
             </span>
-            <div className="flex justify-between items-center mt-1">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(item.qty - 1)}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-10 text-center">{item.qty}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(item.qty + 1)}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-              <Button variant="ghost" size="icon" onClick={handleRemove}>
-                <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+          </div>
+        </div>
+        <div className="border-t border-gray-200 mt-2 pt-2">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleQuantityChange(item.qty - 1)}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-10 text-center">{item.qty}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleQuantityChange(item.qty + 1)}
+              >
+                <Plus className="h-4 w-4" />
               </Button>
             </div>
+            <Button variant="ghost" size="icon" onClick={handleRemove}>
+              <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+            </Button>
           </div>
         </div>
       </div>
