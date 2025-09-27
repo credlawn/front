@@ -119,14 +119,14 @@ export default function Navbar({ menuData }: NavbarProps) {
           <div className="flex items-center gap-4">
             <SearchBox onSearch={handleSearch} className="w-80" />
             <div className="flex items-center gap-6">
-              <button className="relative hover:text-red-500 transition-colors cursor-pointer">
+              <Link href="/wishlist" className="relative hover:text-red-500 transition-colors cursor-pointer">
                 <HeartIcon />
                 {wishlistCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                     {wishlistCount}
                   </span>
                 )}
-              </button>
+              </Link>
               <UserIconContainer />
               <button className="relative hover:text-red-500 transition-colors cursor-pointer">
                 <ShoppingCartIcon />
@@ -167,14 +167,14 @@ export default function Navbar({ menuData }: NavbarProps) {
             >
               <SearchIcon />
             </button>
-            <button className="relative hover:text-red-500 transition-colors cursor-pointer">
+            <Link href="/wishlist" className="relative hover:text-red-500 transition-colors cursor-pointer">
               <HeartIcon />
               {wishlistCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {wishlistCount}
                 </span>
               )}
-            </button>
+            </Link>
             <button className="relative hover:text-red-500 transition-colors cursor-pointer">
               <ShoppingCartIcon />
             </button>
