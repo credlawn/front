@@ -1,18 +1,19 @@
 'use client';
 
 import React from 'react';
-import { useAppSelector, useAppDispatch } from '@/redux/store';
+import { useAppSelector, AppDispatch } from '@/redux/store';
 import { selectCartItems, removeFromCart, updateQuantity } from '@/redux/features/cart-slice';
 import { CartItem } from '@/types/cart';
 import Link from 'next/link';
 import { Button } from '@/ui/button';
 import Image from 'next/image';
-import { Trash2, Plus, Minus } from 'lucide-react';
+import { useDispatch } from 'react-redux';
+import { selectSettings } from '@/redux/features/settings-slice';
 import { selectSession } from '@/redux/features/session-slice';
+import { Trash2, Plus, Minus } from 'lucide-react';
 
-// Component for a single row in the cart items table
-const CartItemRow: React.FC<{ item: CartItem }> = ({ item }) => {
-  const dispatch = useAppDispatch();
+const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, currency }) => {
+  const dispatch: AppDispatch = useDispatch();
   const session = useAppSelector(selectSession);
 
   const identifiers = {
@@ -21,12 +22,12 @@ const CartItemRow: React.FC<{ item: CartItem }> = ({ item }) => {
   };
 
   const handleRemove = () => {
-    dispatch(removeFromCart({ productId: item.product, identifiers }));
+    dispatch(removeFromCart({ productId: item.product, ...identifiers }));
   };
 
   const handleQuantityChange = (newQty: number) => {
     if (newQty > 0) {
-      dispatch(updateQuantity({ productId: item.product, qty: newQty, identifiers }));
+      dispatch(updateQuantity({ productId: item.product, qty: newQty, ...identifiers }));
     }
   };
 
@@ -46,7 +47,7 @@ const CartItemRow: React.FC<{ item: CartItem }> = ({ item }) => {
         <span className="font-medium">{item.productName}</span>
       </div>
       {/* Price */}
-      <div className="col-span-1 text-center">${item.price.toFixed(2)}</div>
+      <div className="col-span-1 text-center">{currency}{item.price.toFixed(2)}</div>
       {/* Quantity */}
       <div className="col-span-1 flex justify-center items-center gap-2">
         <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)}>
@@ -58,7 +59,7 @@ const CartItemRow: React.FC<{ item: CartItem }> = ({ item }) => {
         </Button>
       </div>
       {/* Subtotal */}
-      <div className="col-span-1 text-center font-semibold">${(item.price * item.qty).toFixed(2)}</div>
+      <div className="col-span-1 text-center font-semibold">{currency}{(item.price * item.qty).toFixed(2)}</div>
       {/* Action */}
       <div className="col-span-1 text-center">
         <Button variant="ghost" size="icon" onClick={handleRemove}>
@@ -71,6 +72,7 @@ const CartItemRow: React.FC<{ item: CartItem }> = ({ item }) => {
 
 const CartPage = () => {
   const cartItems = useAppSelector(selectCartItems);
+  const { currency } = useAppSelector(selectSettings);
   const grandTotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
   if (cartItems.length === 0) {
@@ -101,7 +103,7 @@ const CartPage = () => {
             </div>
             <div>
               {cartItems.map(item => (
-                <CartItemRow key={item.product} item={item} />
+                <CartItemRow key={item.product} item={item} currency={currency} />
               ))}
             </div>
           </div>
@@ -114,13 +116,13 @@ const CartPage = () => {
                 {cartItems.map(item => (
                   <div key={item.product} className="flex justify-between">
                     <span className="text-gray-600">{item.productName}</span>
-                    <span className="font-medium">${(item.price * item.qty).toFixed(2)}</span>
+                    <span className="font-medium">{currency}{(item.price * item.qty).toFixed(2)}</span>
                   </div>
                 ))}
               </div>
               <div className="flex justify-between items-center border-t pt-4">
                 <span className="text-lg font-bold">Total</span>
-                <span className="text-lg font-bold">${grandTotal.toFixed(2)}</span>
+                <span className="text-lg font-bold">{currency}{grandTotal.toFixed(2)}</span>
               </div>
               <Button size="lg" className="w-full mt-6">Process to Checkout</Button>
             </div>

@@ -49,6 +49,30 @@ export async function removeFromCartAction(identifiers: { user?: string; guestUi
     }
 }
 
+export async function updateQuantityAction(payload: { productId: string; qty: number; user?: string; guestUid?: string }): Promise<CartItem[]> {
+    try {
+        const sid = await getSid();
+        const response = await axiosInstance.post("/api/method/myecom.api.cart.update_cart_quantity",
+            payload, { headers: { Cookie: sid ? `sid=${sid}` : '' } }
+        );
+        return response.data.message || [];
+    } catch (error) {console.error("Error in updateQuantityAction:", error);
+        throw new Error("Failed to update quantity.");
+    }
+}
+
+export async function clearCartAction(payload: { user?: string; guestUid?: string }): Promise<CartItem[]> {
+    try {
+        const sid = await getSid();
+        const response = await axiosInstance.post("/api/method/myecom.api.cart.clear_cart",
+            payload, { headers: { Cookie: sid ? `sid=${sid}` : '' } }
+        );
+        return response.data.message || [];
+    } catch (error) {console.error("Error in clearCartAction:", error);
+        throw new Error("Failed to clear cart.");
+    }
+}
+
 
 
 
