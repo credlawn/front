@@ -2,11 +2,10 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import toast from 'react-hot-toast';
 import { WishlistItem } from '@/types/wishlist';
 import {
-  getWishlistAPI,
-  addToWishlistAPI,
-  removeFromWishlistAPI,
-  mergeWishlistAPI,
-} from '@/get-api-data/wishlist';
+  getWishlistAction,
+  addToWishlistAction,
+  removeFromWishlistAction,
+} from '@/actions/wishlist';
 import { RootState } from '../store';
 
 interface WishlistState {
@@ -21,12 +20,11 @@ const initialState: WishlistState = {
   error: null,
 };
 
-// Async Thunks
 export const fetchWishlist = createAsyncThunk(
   'wishlist/fetchWishlist',
   async (identifiers: { user?: string; guestUid?: string }, { rejectWithValue }) => {
     try {
-      const response = await getWishlistAPI(identifiers);
+      const response = await getWishlistAction(identifiers);
       return response;
     } catch (error: any) {
       return rejectWithValue(error.message);
@@ -37,11 +35,11 @@ export const fetchWishlist = createAsyncThunk(
 export const addToWishlist = createAsyncThunk(
   'wishlist/addToWishlist',
   async (
-    { productId, identifiers }: { productId: string; identifiers: { user?: string; guestUid?: string } },
+    payload: { productId: string; user?: string; guestUid?: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await addToWishlistAPI({ productId, ...identifiers });
+      const response = await addToWishlistAction(payload);
       toast.success('Product added to wishlist!');
       return response;
     } catch (error: any) {
@@ -54,11 +52,11 @@ export const addToWishlist = createAsyncThunk(
 export const removeFromWishlist = createAsyncThunk(
   'wishlist/removeFromWishlist',
   async (
-    { productId, identifiers }: { productId: string; identifiers: { user?: string; guestUid?: string } },
+    payload: { productId: string; user?: string; guestUid?: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await removeFromWishlistAPI({ productId, ...identifiers });
+      const response = await removeFromWishlistAction(payload);
       toast.error('Product removed from wishlist!');
       return response;
     } catch (error: any) {
@@ -68,33 +66,13 @@ export const removeFromWishlist = createAsyncThunk(
   }
 );
 
-export const mergeWishlist = createAsyncThunk(
-  'wishlist/mergeWishlist',
-  async (
-    { guestUid, user }: { guestUid: string; user: string },
-    { rejectWithValue }
-  ) => {
-    try {
-      const response = await mergeWishlistAPI({ guestUid, user });
-      toast.success('Wishlist merged successfully!');
-      return response;
-    } catch (error: any) {
-      toast.error('Failed to merge wishlist.');
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-
 export const wishlistSlice = createSlice({
   name: 'wishlist',
   initialState,
   reducers: {
-    // This reducer will be used by thunks to update the state with the latest wishlist from the server
     setWishlistItems: (state, action: PayloadAction<WishlistItem[]>) => {
       state.items = action.payload;
     },
-    // Clear error and reset status
     resetWishlistStatus: (state) => {
       state.status = 'idle';
       state.error = null;
@@ -132,17 +110,6 @@ export const wishlistSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(removeFromWishlist.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload as string;
-      })
-      .addCase(mergeWishlist.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(mergeWishlist.fulfilled, (state, action: PayloadAction<WishlistItem[]>) => {
-        state.status = 'succeeded';
-        state.items = action.payload;
-      })
-      .addCase(mergeWishlist.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });
