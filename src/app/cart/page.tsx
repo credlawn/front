@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAppSelector, AppDispatch } from '@/redux/store';
 import { selectCartItems, removeFromCart, updateQuantity } from '@/redux/features/cart-slice';
 import { CartItem } from '@/types/cart';
@@ -14,21 +14,52 @@ import { Trash2, Plus, Minus } from 'lucide-react';
 import InfoIcon from '@/ui/infoIcon';
 
 const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, currency }) => {
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [isShaking, setIsShaking] = useState(false);
   const dispatch: AppDispatch = useDispatch();
   const session = useAppSelector(selectSession);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (item.priceChanged) {
+      setIsShaking(true);
+      interval = setInterval(() => {
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500); // Animation duration
+      }, 5000); // Shake every 5 seconds
+    } else {
+      setIsShaking(false);
+    }
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [item.priceChanged]);
 
   const identifiers = {
     user: session.isLoggedin ? session.user?.email : undefined,
     guestUid: session.uid,
   };
 
-  const handleRemove = () => {
-    dispatch(removeFromCart({ productId: item.product, ...identifiers }));
+  const handleRemove = async () => {
+    setIsRemoving(true);
+    try {
+      await dispatch(removeFromCart({ productId: item.product, ...identifiers }));
+    } finally {
+      setIsRemoving(false);
+    }
   };
 
-  const handleQuantityChange = (newQty: number) => {
+  const handleQuantityChange = async (newQty: number) => {
     if (newQty > 0) {
-      dispatch(updateQuantity({ productId: item.product, qty: newQty, ...identifiers }));
+      setLoading(true);
+      try {
+        await dispatch(updateQuantity({ productId: item.product, qty: newQty, ...identifiers }));
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -56,7 +87,7 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
             <p className="font-medium italic text-gray-500">{item.productName || 'Deleted Product'}</p>
             <p className="text-red-500 text-sm">This item is no longer available.</p>
           </div>
-          <Button variant="ghost" size="icon" onClick={handleRemove}>
+          <Button variant="ghost" size="icon" onClick={handleRemove} disabled={isRemoving} className="cursor-pointer">
             <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
           </Button>
         </div>
@@ -65,27 +96,32 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
   }
 
   return (
-    <div className="py-2 px-3 border-b">
-      {/* Mobile View */}
-      <div className="md:hidden flex flex-col">
-        <div className="flex items-start gap-4">
-          <div className="relative w-16 h-16 flex-shrink-0">
+    <div>
+      {/* Mobile View - Card Layout */}
+      <div className="md:hidden bg-white rounded-lg shadow-md p-4 mb-4">
+        <div className="flex gap-4">
+          {/* Image */}
+          <div className="relative w-24 h-24 flex-shrink-0">
             <Image
               src={item.productImage || '/placeholder.svg'}
               alt={item.productName}
               fill
-              className="object-cover rounded"
-              sizes="64px"
+              className="object-cover rounded-md"
+              sizes="96px"
             />
           </div>
-          <div className="flex-grow flex flex-col gap-1">
-            <span className="font-medium">{item.productName}</span>
+
+          {/* Info and Price */}
+          <div className="flex-grow flex flex-col">
+            <Link href={`/products/${item.slug}`} className="text-base line-clamp-2 min-h-[2.5em] cursor-pointer hover:underline">
+              {item.productName}
+            </Link>
             <span className="font-semibold text-gray-800 flex items-center">
               {item.priceChanged && (
                 <InfoIcon
                   message={newPriceMessage}
                   popupSize="sm"
-                  className="mr-3"
+                  className={`mr-2 ${isShaking ? 'shake-animation' : ''}`}
                   popupClassName={
                     item.price < (item.oldPrice || item.price)
                       ? 'bg-green-100 border border-green-600 text-green-800'
@@ -102,34 +138,26 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
             </span>
           </div>
         </div>
-        <div className="border-t border-gray-200 mt-2 pt-2">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleQuantityChange(item.qty - 1)}
-              >
-                <Minus className="h-4 w-4" />
-              </Button>
-              <span className="w-10 text-center">{item.qty}</span>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => handleQuantityChange(item.qty + 1)}
-              >
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            <Button variant="ghost" size="icon" onClick={handleRemove}>
-              <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+
+        {/* Actions */}
+        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)} disabled={loading} className="cursor-pointer h-7 w-7">
+              <Minus className="h-4 w-4" />
+            </Button>
+            <span className="w-10 text-center font-semibold">{item.qty}</span>
+            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)} disabled={loading} className="cursor-pointer h-7 w-7">
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
+          <Button variant="ghost" className="text-red-500 hover:bg-red-50 cursor-pointer" onClick={handleRemove} disabled={isRemoving} size="icon">
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:grid grid-cols-6 gap-4 items-center">
+      <div className="hidden md:grid grid-cols-6 gap-4 items-center py-2 px-3 border-b">
         <div className="col-span-2 flex items-center gap-4">
           <div className="relative w-16 h-16 flex-shrink-0">
             <Image
@@ -140,14 +168,16 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
               sizes="64px"
             />
           </div>
-          <span className="font-medium">{item.productName}</span>
+          <Link href={`/products/${item.slug}`} className="font-medium cursor-pointer hover:underline">
+            <span>{item.productName}</span>
+          </Link>
         </div>
         <div className="col-span-1 text-center flex items-center justify-center">
           {item.priceChanged && (
             <InfoIcon
               message={newPriceMessage}
               popupSize="sm"
-              className="mr-1"
+              className={`mr-1 ${isShaking ? 'shake-animation' : ''}`}
               popupClassName={
                 item.price < (item.oldPrice || item.price)
                   ? 'bg-green-100 border border-green-600 text-green-800'
@@ -167,6 +197,8 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
             variant="outline"
             size="icon"
             onClick={() => handleQuantityChange(item.qty - 1)}
+            disabled={loading}
+            className="cursor-pointer h-7 w-7"
           >
             <Minus className="h-4 w-4" />
           </Button>
@@ -175,6 +207,8 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
             variant="outline"
             size="icon"
             onClick={() => handleQuantityChange(item.qty + 1)}
+            disabled={loading}
+            className="cursor-pointer h-7 w-7"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -183,7 +217,7 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
           {currency}{(item.price * item.qty).toFixed(0)}
         </div>
         <div className="col-span-1 text-center">
-          <Button variant="ghost" size="icon" onClick={handleRemove}>
+          <Button variant="ghost" size="icon" onClick={handleRemove} disabled={isRemoving} className="cursor-pointer">
             <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
           </Button>
         </div>
