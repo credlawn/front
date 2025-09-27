@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
-import WishlistButton from "@/components/wishlist/WishlistButton";
+import WishlistIcon from "@/components/wishlist/WishlistIcon";
 
 
 interface ProductCardProps {
@@ -60,7 +60,7 @@ export default function ProductCard({
       {/* Mobile View */}
       <div className="md:hidden group block border border-gray-200 overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_10px_rgba(0,0,0,0.1)] h-[320px] relative flex flex-col">
         <div className="cursor-pointer" onClick={() => router.push(`/products/${p.slug}`)}>
-          <div className="relative bg-white" style={{ height: mobileImageHeight }}>
+          <div className="relative bg-white pt-4" style={{ height: mobileImageHeight }}>
             <Image
               src={p.imageDefault}
               alt={p.altText}
@@ -77,7 +77,9 @@ export default function ProductCard({
               sizes="50vw"
               style={{ padding: "1px" }}
             />
-
+            <div className="absolute top-2 right-2 z-10">
+              <WishlistIcon productId={product.name} />
+            </div>
           </div>
           <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
             <h3 className="mb-1" style={{ minHeight: "2.8em", lineHeight: "1.4em" }}>
@@ -123,21 +125,12 @@ export default function ProductCard({
             </span>
           </div>
         </div>
-        <div className="absolute bottom-2 right-2">
-          <WishlistButton 
-            productId={product.name}
-            productName={product.productName}
-            productImage={product.productImage1 || "/images/placeholder.jpg"}
-            price={discountedPriceAsNumber || priceAsNumber}
-            slug={product.productSlug}
-          />
-        </div>
       </div>
 
       {/* Desktop View */}
       <div className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_10px_rgba(0,0,0,0.1)] relative h-full">
           <div className="cursor-pointer h-full flex flex-col" onClick={() => router.push(`/products/${p.slug}`)}>
-              <div className="relative bg-white" style={{ height: "50%" }}>
+              <div className="relative bg-white pt-4" style={{ height: "50%" }}>
                   <Image
                       src={p.imageDefault}
                       alt={p.altText}
@@ -154,7 +147,9 @@ export default function ProductCard({
                       sizes="240px"
                       style={{ padding: "1px" }}
                   />
-                  
+                  <div className="absolute top-2 right-2 z-10">
+                    <WishlistIcon productId={product.name} />
+                  </div>
               </div>
               <div className="flex flex-col p-4 flex-grow">
                   <h3 className="mb-2">
@@ -184,20 +179,12 @@ export default function ProductCard({
             <div className="flex items-center justify-between">
               <p className="text-lg font-bold text-gray-900">${product.price}</p>
               <div className="flex items-center space-x-2">
-                <WishlistButton 
-                  productId={product.name}
-                  productName={product.productName}
-                  productImage={product.productImage1 || "/images/placeholder.jpg"}
-                  price={discountedPriceAsNumber || priceAsNumber}
-                  slug={product.productSlug}
-                />
                 <button className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                   Add to Cart
                 </button>
               </div>
             </div>
               </div>
-              
           </div>
       </div>
     </>
