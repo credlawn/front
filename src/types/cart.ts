@@ -5,5 +5,8 @@ export interface CartItem {
   price: number;
   qty: number;
   slug: string;
-  secondImage?: string; 
+  secondImage?: string;
+  priceChanged?: boolean;
+  oldPrice?: number;
+  deleted?: boolean;
 }

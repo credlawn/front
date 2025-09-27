@@ -11,6 +11,7 @@ import { useDispatch } from 'react-redux';
 import { selectSettings } from '@/redux/features/settings-slice';
 import { selectSession } from '@/redux/features/session-slice';
 import { Trash2, Plus, Minus } from 'lucide-react';
+import InfoIcon from '@/ui/infoIcon';
 
 const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, currency }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -31,40 +32,159 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
     }
   };
 
-  return (
-    <div className="grid grid-cols-6 gap-4 items-center py-4 border-b">
-      {/* Product */}
-      <div className="col-span-2 flex items-center gap-4">
-        <div className="relative w-16 h-16 flex-shrink-0">
-          <Image
-            src={item.productImage || '/placeholder.svg'}
-            alt={item.productName}
-            fill
-            className="object-cover rounded"
-            sizes="64px"
-          />
+  const newPriceMessage = (
+    <div>
+      <div>Price has changed from</div>
+      <div>
+        from{' '}
+        <span className="line-through">
+          {currency}
+          {(item.oldPrice || 0).toFixed(0)}
+        </span>{' '}
+        to{' '}
+        {currency}
+        {item.price.toFixed(0)}
+      </div>
+    </div>
+  );
+
+  if (item.deleted) {
+    return (
+      <div className="py-4 border-b">
+        <div className="flex justify-between items-center">
+          <div>
+            <p className="font-medium italic text-gray-500">{item.productName || 'Deleted Product'}</p>
+            <p className="text-red-500 text-sm">This item is no longer available.</p>
+          </div>
+          <Button variant="ghost" size="icon" onClick={handleRemove}>
+            <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+          </Button>
         </div>
-        <span className="font-medium">{item.productName}</span>
       </div>
-      {/* Price */}
-      <div className="col-span-1 text-center">{currency}{item.price.toFixed(2)}</div>
-      {/* Quantity */}
-      <div className="col-span-1 flex justify-center items-center gap-2">
-        <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)}>
-          <Minus className="h-4 w-4" />
-        </Button>
-        <span className="w-10 text-center">{item.qty}</span>
-        <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)}>
-          <Plus className="h-4 w-4" />
-        </Button>
+    );
+  }
+
+  return (
+    <div className="py-2 px-3 border-b">
+      {/* Mobile View */}
+      <div className="md:hidden">
+        <div className="flex items-start gap-4">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            <Image
+              src={item.productImage || '/placeholder.svg'}
+              alt={item.productName}
+              fill
+              className="object-cover rounded"
+              sizes="64px"
+            />
+          </div>
+          <div className="flex-grow flex flex-col gap-1">
+            <span className="font-medium">{item.productName}</span>
+            <span className="font-semibold text-gray-800 flex items-center">
+              {item.priceChanged && (
+                <InfoIcon
+                  message={newPriceMessage}
+                  popupSize="sm"
+                  className="mr-3"
+                  popupClassName={
+                    item.price < (item.oldPrice || item.price)
+                      ? 'bg-green-100 border border-green-600 text-green-800'
+                      : 'bg-yellow-100 border border-yellow-600 text-yellow-800'
+                  }
+                  iconClassName={
+                    item.price < (item.oldPrice || item.price)
+                      ? 'text-green-700'
+                      : 'text-red-700'
+                  }
+                />
+              )}
+              {currency}{(item.price * item.qty).toFixed(0)}
+            </span>
+            <div className="flex justify-between items-center mt-1">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(item.qty - 1)}
+                >
+                  <Minus className="h-4 w-4" />
+                </Button>
+                <span className="w-10 text-center">{item.qty}</span>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => handleQuantityChange(item.qty + 1)}
+                >
+                  <Plus className="h-4 w-4" />
+                </Button>
+              </div>
+              <Button variant="ghost" size="icon" onClick={handleRemove}>
+                <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
-      {/* Subtotal */}
-      <div className="col-span-1 text-center font-semibold">{currency}{(item.price * item.qty).toFixed(2)}</div>
-      {/* Action */}
-      <div className="col-span-1 text-center">
-        <Button variant="ghost" size="icon" onClick={handleRemove}>
-          <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
-        </Button>
+
+      {/* Desktop View */}
+      <div className="hidden md:grid grid-cols-6 gap-4 items-center">
+        <div className="col-span-2 flex items-center gap-4">
+          <div className="relative w-16 h-16 flex-shrink-0">
+            <Image
+              src={item.productImage || '/placeholder.svg'}
+              alt={item.productName}
+              fill
+              className="object-cover rounded"
+              sizes="64px"
+            />
+          </div>
+          <span className="font-medium">{item.productName}</span>
+        </div>
+        <div className="col-span-1 text-center flex items-center justify-center">
+          {item.priceChanged && (
+            <InfoIcon
+              message={newPriceMessage}
+              popupSize="sm"
+              className="mr-1"
+              popupClassName={
+                item.price < (item.oldPrice || item.price)
+                  ? 'bg-green-100 border border-green-600 text-green-800'
+                  : 'bg-yellow-100 border border-yellow-600 text-yellow-800'
+              }
+              iconClassName={
+                item.price < (item.oldPrice || item.price)
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              }
+            />
+          )}
+          {currency}{item.price.toFixed(0)}
+        </div>
+        <div className="col-span-1 flex justify-center items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => handleQuantityChange(item.qty - 1)}
+          >
+            <Minus className="h-4 w-4" />
+          </Button>
+          <span className="w-10 text-center">{item.qty}</span>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => handleQuantityChange(item.qty + 1)}
+          >
+            <Plus className="h-4 w-4" />
+          </Button>
+        </div>
+        <div className="col-span-1 text-center font-semibold">
+          {currency}{(item.price * item.qty).toFixed(0)}
+        </div>
+        <div className="col-span-1 text-center">
+          <Button variant="ghost" size="icon" onClick={handleRemove}>
+            <Trash2 className="h-5 w-5 text-gray-500 hover:text-red-500" />
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -91,10 +211,10 @@ const CartPage = () => {
     <div className="bg-gray-50 min-h-screen">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left Column: Cart Items */}
-          <div className="w-full lg:w-2/3 bg-white p-6 rounded-lg shadow-md">
-            <div className="grid grid-cols-6 gap-4 items-center pb-4 border-b font-semibold text-gray-600">
+        <div className="flex flex-col items-end gap-8">
+          {/* Cart Items */}
+          <div className="w-full bg-white p-6 rounded-lg shadow-md">
+            <div className="hidden md:grid grid-cols-6 gap-4 items-center pb-4 border-b font-semibold text-gray-600">
               <div className="col-span-2">Product</div>
               <div className="col-span-1 text-center">Price</div>
               <div className="col-span-1 text-center">Quantity</div>
@@ -108,7 +228,7 @@ const CartPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Order Summary */}
+          {/* Order Summary */}
           <div className="w-full lg:w-1/3">
             <div className="bg-white p-6 rounded-lg shadow-md">
               <h2 className="text-xl font-semibold border-b pb-4 mb-4">Order Summary</h2>
@@ -116,13 +236,13 @@ const CartPage = () => {
                 {cartItems.map(item => (
                   <div key={item.product} className="flex justify-between">
                     <span className="text-gray-600">{item.productName}</span>
-                    <span className="font-medium">{currency}{(item.price * item.qty).toFixed(2)}</span>
+                    <span className="font-medium">{currency}{(item.price * item.qty).toFixed(0)}</span>
                   </div>
                 ))}
               </div>
               <div className="flex justify-between items-center border-t pt-4">
                 <span className="text-lg font-bold">Total</span>
-                <span className="text-lg font-bold">{currency}{grandTotal.toFixed(2)}</span>
+                <span className="text-lg font-bold">{currency}{grandTotal.toFixed(0)}</span>
               </div>
               <Button size="lg" className="w-full mt-6">Process to Checkout</Button>
             </div>
@@ -134,4 +254,3 @@ const CartPage = () => {
 };
 
 export default CartPage;
-
