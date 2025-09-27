@@ -12,8 +12,17 @@ import { Button } from '@/ui/button';
 // A self-contained Product Card component for the wishlist page
 const WishlistProductCard: React.FC<{ item: WishlistItem }> = ({ item }) => {
   return (
-    <div className="border rounded-lg p-4 flex flex-col items-center text-center shadow-sm">
-      <Image src={item.productImage} alt={item.productName} width={128} height={128} className="object-cover mb-4 rounded" />
+    <div className="border rounded-lg p-4 flex flex-col text-center shadow-sm">
+      <div className="relative w-full aspect-square mb-4">
+        <Image
+          src={item.productImage}
+          alt={item.productName}
+          fill
+          className="object-cover rounded"
+          priority
+          sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      </div>
       <h3 className="font-semibold text-md mb-2">{item.productName}</h3>
       <p className="text-lg font-bold mb-4">{item.price}</p>
       <WishlistButton 

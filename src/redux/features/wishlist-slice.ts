@@ -5,7 +5,7 @@ import {
   getWishlistAction,
   addToWishlistAction,
   removeFromWishlistAction,
-} from '@/actions/wishlist';
+} from '@/get-api-data/wishlist';
 import { RootState } from '../store';
 
 interface WishlistState {
