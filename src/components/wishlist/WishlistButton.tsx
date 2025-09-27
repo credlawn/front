@@ -2,11 +2,10 @@
 
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useAppSelector } from "@/redux/store";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { addToWishlist, removeFromWishlist, selectWishlistItems } from "@/redux/features/wishlist-slice";
 import { selectSession } from "@/redux/features/session-slice";
-import { WishlistItem } from "@/types/wishlist";
-import { Button } from "@/ui/button"; // Assuming a Button component exists in "@/ui/button"
+import { Button } from "@/ui/button"; 
 
 interface WishlistButtonProps {
   productId: string;
@@ -18,12 +17,8 @@ interface WishlistButtonProps {
 
 const WishlistButton: React.FC<WishlistButtonProps> = ({
   productId,
-  productName,
-  productImage,
-  price,
-  slug,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const wishlistItems = useAppSelector(selectWishlistItems);
   const session = useAppSelector(selectSession);
 
@@ -36,9 +31,9 @@ const WishlistButton: React.FC<WishlistButtonProps> = ({
 
   const handleWishlistToggle = () => {
     if (isInWishlist) {
-      dispatch(removeFromWishlist({ productId, identifiers }));
+      dispatch(removeFromWishlist({ productId, ...identifiers }));
     } else {
-      dispatch(addToWishlist({ productId, identifiers }));
+      dispatch(addToWishlist({ productId, ...identifiers }));
     }
   };
 

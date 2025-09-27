@@ -4,14 +4,14 @@ import axiosInstance from "@/lib/axios";
 import { WishlistItem } from "@/types/wishlist";
 import { cookies } from 'next/headers';
 
-const getSid = () => {
-    const cookieStore = cookies();
+const getSid = async () => {
+    const cookieStore = await cookies();
     return cookieStore.get('sid')?.value;
 }
 
 export async function getWishlistAction(identifiers: { user?: string; guestUid?: string }): Promise<WishlistItem[]> {
     try {
-        const sid = getSid();
+        const sid = await getSid();
         const response = await axiosInstance.post(
             "/api/method/myecom.api.wishlist.get_wishlist_items",
             identifiers,
@@ -26,7 +26,7 @@ export async function getWishlistAction(identifiers: { user?: string; guestUid?:
 
 export async function addToWishlistAction(payload: { productId: string; user?: string; guestUid?: string }): Promise<WishlistItem[]> {
     try {
-        const sid = getSid();
+        const sid = await getSid();
         const response = await axiosInstance.post(
             "/api/method/myecom.api.wishlist.add_to_wishlist",
             payload,
@@ -41,7 +41,7 @@ export async function addToWishlistAction(payload: { productId: string; user?: s
 
 export async function removeFromWishlistAction(payload: { productId: string; user?: string; guestUid?: string }): Promise<WishlistItem[]> {
     try {
-        const sid = getSid();
+        const sid = await getSid();
         const response = await axiosInstance.post(
             "/api/method/myecom.api.wishlist.remove_from_wishlist",
             payload,

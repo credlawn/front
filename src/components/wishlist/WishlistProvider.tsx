@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSession } from '@/auth/session';
 import { fetchWishlist } from '@/redux/features/wishlist-slice';
@@ -12,11 +12,21 @@ interface WishlistProviderProps {
 
 export default function WishlistProvider({ children }: WishlistProviderProps) {
   const dispatch = useDispatch<AppDispatch>();
-  const session = useSession();
-  const { isLoggedin, user, uid } = session;
+  const { isLoggedin, user, uid } = useSession();
+
+  const guestUidRef = useRef(uid);
 
   useEffect(() => {
-    dispatch(fetchWishlist({ user: user?.email, guestUid: uid }));
+    if (!isLoggedin && uid) {
+      guestUidRef.current = uid;
+    }
+
+    const finalUser = user?.email;
+    const finalGuestUid = isLoggedin ? guestUidRef.current : uid;
+
+    if (finalUser || finalGuestUid) {
+      dispatch(fetchWishlist({ user: finalUser, guestUid: finalGuestUid }));
+    }
   }, [isLoggedin, user, uid, dispatch]);
 
   return <>{children}</>;
