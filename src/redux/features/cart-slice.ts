@@ -1,80 +1,158 @@
-import { createSelector, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../store";
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import toast from 'react-hot-toast';
+import { CartItem } from '@/types/cart';
+import {
+  getCartAction,
+  addToCartAction,
+  removeFromCartAction,
+  updateQuantityAction,
+} from '@/get-api-data/cart';
+import { RootState } from '../store';
 
-type InitialState = {
+// Define common types for payloads
+interface Identifiers {
+  user?: string;
+  guestUid?: string;
+}
+
+interface CartState {
   items: CartItem[];
-};
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | null;
+}
 
-type CartItem = {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-  imgs?: {
-    thumbnails: string[];
-    previews: string[];
-  };
-};
-
-const initialState: InitialState = {
+const initialState: CartState = {
   items: [],
+  status: 'idle',
+  error: null,
 };
 
-export const cart = createSlice({
-  name: "cart",
+// Async Thunks
+export const fetchCart = createAsyncThunk(
+  'cart/fetchCart',
+  async (payload: { user?: string; guestUid?: string }, { rejectWithValue }) => {
+    try {
+      const response = await getCartAction(payload);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const addToCart = createAsyncThunk(
+  'cart/addToCart',
+  async (
+    payload: { productId: string; qty: number; user?: string; guestUid?: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await addToCartAction(payload);
+      toast.success('Product added to cart!');
+      return response;
+    } catch (error: any) {
+      toast.error('Failed to add product to cart.');
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const removeFromCart = createAsyncThunk(
+  'cart/removeFromCart',
+  async (payload: { productId: string; user?: string; guestUid?: string }, { rejectWithValue }) => {
+    try {
+      const response = await removeFromCartAction(payload);
+      toast.error('Product removed from cart.');
+      return response;
+    } catch (error: any) {
+      toast.error('Failed to remove product from cart.');
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const updateQuantity = createAsyncThunk(
+  'cart/updateQuantity',
+  async (
+    payload: { productId: string; qty: number; user?: string; guestUid?: string },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await updateQuantityAction(payload);
+      toast.success('Cart quantity updated!');
+      return response;
+    } catch (error: any) {
+      toast.error('Failed to update quantity.');
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const cartSlice = createSlice({
+  name: 'cart',
   initialState,
   reducers: {
-    addItemToCart: (state, action: PayloadAction<CartItem>) => {
-      const { id, title, price, quantity, imgs } =
-        action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
-
-      if (existingItem) {
-        existingItem.quantity += quantity;
-      } else {
-        state.items.push({
-          id,
-          title,
-          price,
-          quantity,
-          imgs,
-        });
-      }
+    setCartItems: (state, action: PayloadAction<CartItem[]>) => {
+      state.items = action.payload;
     },
-    removeItemFromCart: (state, action: PayloadAction<number>) => {
-      const itemId = action.payload;
-      state.items = state.items.filter((item) => item.id !== itemId);
+    resetCartStatus: (state) => {
+      state.status = 'idle';
+      state.error = null;
     },
-    updateCartItemQuantity: (
-      state,
-      action: PayloadAction<{ id: number; quantity: number }>
-    ) => {
-      const { id, quantity } = action.payload;
-      const existingItem = state.items.find((item) => item.id === id);
-
-      if (existingItem) {
-        existingItem.quantity = quantity;
-      }
-    },
-
-    removeAllItemsFromCart: (state) => {
-      state.items = [];
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchCart.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchCart.fulfilled, (state, action: PayloadAction<CartItem[]>) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(fetchCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+      .addCase(addToCart.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(addToCart.fulfilled, (state, action: PayloadAction<CartItem[]>) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+      .addCase(removeFromCart.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(removeFromCart.fulfilled, (state, action: PayloadAction<CartItem[]>) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(removeFromCart.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+      .addCase(updateQuantity.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateQuantity.fulfilled, (state, action: PayloadAction<CartItem[]>) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(updateQuantity.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const selectCartItems = (state: RootState) => state.cartReducer.items;
+export const { setCartItems, resetCartStatus } = cartSlice.actions;
+export default cartSlice.reducer;
 
-export const selectTotalPrice = createSelector([selectCartItems], (items) => {
-  return items.reduce((total, item) => {
-    return total + item.price * item.quantity;
-  }, 0);
-});
-
-export const {
-  addItemToCart,
-  removeItemFromCart,
-  updateCartItemQuantity,
-  removeAllItemsFromCart,
-} = cart.actions;
-export default cart.reducer;
+// Selectors
+export const selectCartItems = (state: RootState) => state.cart.items;
+export const selectCartStatus = (state: RootState) => state.cart.status;
+export const selectCartError = (state: RootState) => state.cart.error;

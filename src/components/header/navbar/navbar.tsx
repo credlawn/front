@@ -8,7 +8,8 @@ import { Logo, LogoMobile } from "@/components/header/logo/logo";
 import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
 import { selectWishlistItems } from "@/redux/features/wishlist-slice";
-import { HeartIcon, ShoppingCartIcon, MenuIcon, SearchIcon, ChevronDown } from "lucide-react";
+import { selectCartItems } from "@/redux/features/cart-slice";
+import { HeartIcon, MenuIcon, SearchIcon, ChevronDown, ShoppingCart } from "lucide-react";
 import Sidebar from "@/components/header/sidebar/sidebar";
 
 interface NavbarProps {
@@ -18,7 +19,9 @@ interface NavbarProps {
 export default function Navbar({ menuData }: NavbarProps) {
   const settings = useAppSelector((state) => state.settingsReducer); 
   const wishlistItems = useAppSelector(selectWishlistItems);
-  const wishlistCount = wishlistItems.length; 
+  const cartItems = useAppSelector(selectCartItems);
+  const wishlistCount = wishlistItems.length;
+  const cartCount = cartItems.reduce((total, item) => total + item.qty, 0); 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -128,9 +131,14 @@ export default function Navbar({ menuData }: NavbarProps) {
                 )}
               </Link>
               <UserIconContainer />
-              <button className="relative hover:text-red-500 transition-colors cursor-pointer">
-                <ShoppingCartIcon />
-              </button>
+              <Link href="/cart" className="relative hover:text-red-500 transition-colors cursor-pointer">
+                <ShoppingCart />
+                {cartCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
             </div>
           </div>
         </div>
@@ -175,9 +183,14 @@ export default function Navbar({ menuData }: NavbarProps) {
                 </span>
               )}
             </Link>
-            <button className="relative hover:text-red-500 transition-colors cursor-pointer">
-              <ShoppingCartIcon />
-            </button>
+            <Link href="/cart" className="relative hover:text-red-500 transition-colors cursor-pointer">
+              <ShoppingCart />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 

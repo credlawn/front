@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
 import WishlistIcon from "@/components/wishlist/WishlistIcon";
+import CartButton from "@/components/cart/CartButton";
 
 
 interface ProductCardProps {
@@ -179,9 +180,9 @@ export default function ProductCard({
             <div className="flex items-center justify-between">
               <p className="text-lg font-bold text-gray-900">${product.price}</p>
               <div className="flex items-center space-x-2">
-                <button className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                  Add to Cart
-                </button>
+                <CartButton 
+                  productId={product.name}
+                />
               </div>
             </div>
               </div>

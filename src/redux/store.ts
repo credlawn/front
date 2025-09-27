@@ -12,7 +12,7 @@ import { TypedUseSelectorHook, useSelector } from "react-redux";
 
 const rootReducer = combineReducers({
   quickViewReducer,
-  cartReducer,
+  cart: cartReducer,
   wishlist: wishlistReducer,
   productDetailsReducer,
   settingsReducer,

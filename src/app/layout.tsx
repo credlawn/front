@@ -10,6 +10,7 @@ import NavbarContainer from "@/components/header/navbar";
 import  TopBannerContainer  from "@/components/header/topbanner";
 import { ReduxProvider } from "@/redux/provider";
 import  PreLoader  from "@/components/common/PreLoader";
+import CartProvider from "@/components/cart/CartProvider";
 import WishlistProvider from '@/components/wishlist/WishlistProvider';
 
 const outfit = Outfit({
@@ -56,13 +57,15 @@ export default async function RootLayout({
       >
         <PreLoader color={settingsData.primaryColor} />
         <ReduxProvider preloadedState={preloadedState}> 
-          <WishlistProvider>
-            <TopBannerContainer /> 
-            <NavbarContainer />
-            {!uid && <UIDGenerator />}
-            {children}
-            <VisitorsRecord />
-          </WishlistProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <TopBannerContainer /> 
+              <NavbarContainer />
+              {!uid && <UIDGenerator />}
+              {children}
+              <VisitorsRecord />
+            </WishlistProvider>
+          </CartProvider>
         </ReduxProvider>
       </body>
     </html>
