@@ -2,9 +2,11 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { Product } from "@/types/product";
 import WishlistIcon from "@/components/wishlist/WishlistIcon";
 import CartButton from "@/components/cart/CartButton";
+import { Button } from '@/ui/button';
 
 
 interface ProductCardProps {
@@ -33,6 +35,7 @@ export default function ProductCard({
 
 }: ProductCardProps) {
   const router = useRouter();
+  const [isHovered, setIsHovered] = useState(false);
   const priceAsNumber = product.price ? parseFloat(product.price.replace(/[^0-9.]/g, '')) : 0;
   const discountedPriceAsNumber = product.discountedPrice ? parseFloat(product.discountedPrice.replace(/[^0-9.]/g, '')) : 0;
 
@@ -52,6 +55,9 @@ export default function ProductCard({
     slug: product.productSlug || "#",
     altText: product.productName || product.productSlug || "Product image",
     ndText: product.ndText || "Only few left",
+    unitsSold: product.unitsSold || 0,
+    shortDescription: product.shortDescription || "",
+    stock: product.stock || 0,
   };
 
   const mobileImageHeight = 140;
@@ -129,14 +135,18 @@ export default function ProductCard({
       </div>
 
       {/* Desktop View */}
-      <div className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_10px_rgba(0,0,0,0.1)] relative h-full">
+      <div 
+        className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] relative"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
           <div className="cursor-pointer h-full flex flex-col" onClick={() => router.push(`/products/${p.slug}`)}>
-              <div className="relative bg-white pt-4" style={{ height: "50%" }}>
+              <div className="relative bg-white pt-4" style={{ height: "200px" }}>
                   <Image
                       src={p.imageDefault}
                       alt={p.altText}
                       fill
-                      className="object-cover transition-transform duration-300 group-hover:opacity-0 group-hover:scale-105"
+                      className="object-cover transition-transform duration-300"
                       sizes="240px"
                       style={{ padding: "1px" }}
                   />
@@ -144,7 +154,7 @@ export default function ProductCard({
                       src={p.imageHover}
                       alt={p.altText}
                       fill
-                      className="object-cover mx-0.5 my-0.5 absolute inset-0 opacity-0 transition-transform duration-300 group-hover:opacity-100 group-hover:scale-105"
+                      className="object-cover mx-0.5 my-0.5 absolute inset-0 opacity-0 transition-transform duration-300"
                       sizes="240px"
                       style={{ padding: "1px" }}
                   />
@@ -152,39 +162,83 @@ export default function ProductCard({
                     <WishlistIcon productId={product.name} />
                   </div>
               </div>
-              <div className="flex flex-col p-4 flex-grow">
-                  <h3 className="mb-2">
-                      <span
-                          className="text-natural-900 text-[14px] font-light tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block w-full"
-                          style={{
-                              display: "-webkit-box",
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: "vertical",
-                              overflow: "hidden",
-                              minHeight: "2.8em",
-                              lineHeight: "1.4em",
-                          }}
-                      >
-                          {p.title}
-                      </span>
-                  </h3>
-                  <div className="flex items-center gap-1 mb-2 text-sm text-red-500 select-none">
-                      <span>
-                          {"★".repeat(Math.floor(p.rating))}
-                          {"☆".repeat(5 - Math.floor(p.rating))}
-                      </span>
-                      <span className="text-sm font-semibold text-gray-500 ml-2">
-                          ({p.rating_count})
-                      </span>
+              <div className="flex flex-col p-4 flex-grow justify-between"> {/* Added justify-between here */}
+                  <div> {/* Wrapper for title and rating */}
+                      <h3 className="mb-2">
+                          <span
+                              className="text-base font-semibold tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block w-full"
+                              style={{
+                                  display: "-webkit-box",
+                                  WebkitLineClamp: 2,
+                                  WebkitBoxOrient: "vertical",
+                                  overflow: "hidden",
+                                  minHeight: "2.8em",
+                                  lineHeight: "1.4em",
+                              }}
+                          >
+                              {p.title}
+                          </span>
+                      </h3>
+                      <div className="flex items-center gap-1 mb-2 text-sm text-gray-600 select-none"> {/* Changed text-red-500 to text-gray-600 */}
+                          <span>
+                              {"★".repeat(Math.floor(p.rating))}
+                              {"☆".repeat(5 - Math.floor(p.rating))}
+                          </span>
+                          <span className="text-sm font-semibold text-gray-500 ml-2">
+                              ({p.rating_count} reviews) {/* Added 'reviews' */}
+                          </span>
+                          {p.unitsSold > 0 && ( // Display units sold if available
+                            <span className="text-sm font-semibold text-gray-500 ml-2">
+                              | {p.unitsSold} sold
+                            </span>
+                          )}
+                      </div>
                   </div>
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-bold text-gray-900">${product.price}</p>
-              <div className="flex items-center space-x-2">
-                <CartButton 
-                  productId={product.name}
-                />
-              </div>
-            </div>
+
+                  {/* Price and Cart Button Section */}
+                  <div className="mt-auto"> {/* Pushes this section to the bottom */}
+                      <div className="flex items-baseline gap-2 mb-2"> {/* Price display */}
+                          <p className="text-xl font-bold text-gray-900">
+                              {currency}
+                              {formatInr(p.price)}
+                          </p>
+                          {p.oldPrice > 0 && p.discountPercent > 0 && (
+                              <del className="text-gray-500 text-sm">
+                                  {currency}
+                                  {formatInr(p.oldPrice)}
+                              </del>
+                          )}
+                          <span className="ml-auto text-sm font-medium">
+                            {p.discountPercent > 0 ? (
+                              <span className="text-green-600">{p.discountPercent.toFixed(0)}% off</span>
+                            ) : p.ndText ? (
+                              <span className="text-gray-600">{p.ndText}</span>
+                            ) : null}
+                          </span>
+                      </div>
+                      {p.stock === 0 ? (
+                        <p className="text-sm text-red-500 mb-2">Out of Stock</p>
+                      ) : p.stock > 0 && p.stock <= 10 ? (
+                        <p className="text-sm text-red-500 mb-2">Only few left</p>
+                      ) : null}
+                      {p.shortDescription && ( // Display shortDescription if available
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">{p.shortDescription}</p>
+                      )}
+                      <div className="w-full relative h-10"> {/* Added relative height for absolute positioning */}
+                          <div className={`absolute bottom-0 left-0 right-0 transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
+                              {p.stock === 0 ? (
+                                <Button disabled className="w-full rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm cursor-not-allowed">
+                                  Out of Stock
+                                </Button>
+                              ) : (
+                                <CartButton
+                                  productId={product.name}
+                                  className="w-full" // Make button full width
+                                />
+                              )}
+                          </div>
+                      </div>
+                  </div>
               </div>
           </div>
       </div>

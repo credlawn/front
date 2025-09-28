@@ -10,11 +10,13 @@ import { Button } from '@/ui/button';
 interface CartButtonProps {
   productId: string;
   qty?: number; 
+  className?: string;
 }
 
 const CartButton: React.FC<CartButtonProps> = ({
   productId,
   qty = 1,
+  className,
 }) => {
   const dispatch: AppDispatch = useDispatch();
   const cartItems = useAppSelector(selectCartItems);
@@ -37,7 +39,7 @@ const CartButton: React.FC<CartButtonProps> = ({
   };
 
   return (
-    <Button onClick={handleAddToCart} disabled={isInCart} className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+    <Button onClick={handleAddToCart} disabled={isInCart} className={`${className} rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`}>
       {isInCart ? "Added to Cart" : "Add to Cart"}
     </Button>
   );

@@ -19,4 +19,6 @@ export type Product = {
   productImage1: string | null;
   productImage2: string | null;
   productCategory: string[];
+  unitsSold?: number;
+  shortDescription?: string;
 };
