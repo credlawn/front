@@ -113,40 +113,48 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
 
           {/* Info and Price */}
           <div className="flex-grow flex flex-col">
-            <Link href={`/products/${item.slug}`} className="text-base line-clamp-2 min-h-[2.5em] cursor-pointer hover:underline">
+            <Link href={`/products/${item.slug}`} className="text-sm min-h-[2.5em] cursor-pointer hover:underline block overflow-hidden text-ellipsis"
+              style={{
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: 2,
+              }}
+            >
               {item.productName}
             </Link>
-            <span className="font-semibold text-gray-800 flex items-center">
+            <div className="font-semibold text-gray-800 flex items-center mt-1">
               {item.priceChanged && (
-                <InfoIcon
-                  message={newPriceMessage}
-                  popupSize="sm"
-                  className={`mr-2 ${isShaking ? 'shake-animation' : ''}`}
-                  popupClassName={
-                    item.price < (item.oldPrice || item.price)
-                      ? 'bg-green-100 border border-green-600 text-green-800'
-                      : 'bg-yellow-100 border border-yellow-600 text-yellow-800'
-                  }
-                  iconClassName={
-                    item.price < (item.oldPrice || item.price)
-                      ? 'text-green-700'
-                      : 'text-red-700'
-                  }
-                />
+                <div className="flex-shrink-0 z-10 inline-flex items-center">
+                  <InfoIcon
+                    message={newPriceMessage}
+                    popupSize="sm"
+                    className={`mr-3 ${isShaking ? 'shake-animation' : ''}`}
+                    popupClassName={
+                      item.price < (item.oldPrice || item.price)
+                        ? 'bg-green-100 border border-green-600 text-green-800'
+                        : 'bg-yellow-100 border border-yellow-600 text-yellow-800'
+                    }
+                    iconClassName={
+                      item.price < (item.oldPrice || item.price)
+                        ? 'text-green-700 h-5 w-5'
+                        : 'text-red-700 h-5 w-5'
+                    }
+                  />
+                </div>
               )}
               {currency}{(item.price * item.qty).toFixed(0)}
-            </span>
+            </div>
           </div>
         </div>
 
         {/* Actions */}
-        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+        <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)} disabled={loading} className="cursor-pointer h-7 w-7">
+            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)} disabled={loading} className="cursor-pointer h-6 w-6">
               <Minus className="h-4 w-4" />
             </Button>
-            <span className="w-10 text-center font-semibold">{item.qty}</span>
-            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)} disabled={loading} className="cursor-pointer h-7 w-7">
+            <span className="w-10 text-center font-semibold text-sm">{item.qty}</span>
+            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)} disabled={loading} className="cursor-pointer h-6 w-6">
               <Plus className="h-4 w-4" />
             </Button>
           </div>
@@ -177,7 +185,7 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
             <InfoIcon
               message={newPriceMessage}
               popupSize="sm"
-              className={`mr-1 ${isShaking ? 'shake-animation' : ''}`}
+              className={`mr-2 ${isShaking ? 'shake-animation' : ''}`}
               popupClassName={
                 item.price < (item.oldPrice || item.price)
                   ? 'bg-green-100 border border-green-600 text-green-800'
@@ -185,8 +193,8 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
               }
               iconClassName={
                 item.price < (item.oldPrice || item.price)
-                  ? 'text-green-700'
-                  : 'text-red-700'
+                  ? 'text-green-700 h-5 w-5'
+                  : 'text-red-700 h-5 w-5'
               }
             />
           )}
@@ -227,7 +235,8 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
 };
 
 const CartPage = () => {
-  const cartItems = useAppSelector(selectCartItems);
+  const allCartItems = useAppSelector(selectCartItems);
+  const cartItems = allCartItems.filter(item => !item.deleted);
   const { currency } = useAppSelector(selectSettings);
   const grandTotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
 
