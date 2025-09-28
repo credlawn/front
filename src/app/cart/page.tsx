@@ -149,15 +149,19 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
 
         {/* Actions */}
         <div className="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)} disabled={loading} className="cursor-pointer h-6 w-6">
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="w-10 text-center font-semibold text-sm">{item.qty}</span>
-            <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)} disabled={loading} className="cursor-pointer h-6 w-6">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          {item.stock === 0 ? (
+            <span className="text-red-500 font-semibold">Out of Stock</span>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty - 1)} disabled={loading} className="cursor-pointer h-6 w-6">
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-10 text-center font-semibold text-sm">{item.qty}</span>
+              <Button variant="outline" size="icon" onClick={() => handleQuantityChange(item.qty + 1)} disabled={loading} className="cursor-pointer h-6 w-6">
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
           <Button variant="ghost" className="text-red-500 hover:bg-red-50 cursor-pointer" onClick={handleRemove} disabled={isRemoving} size="icon">
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -201,25 +205,31 @@ const CartItemRow: React.FC<{ item: CartItem; currency: string }> = ({ item, cur
           {currency}{item.price.toFixed(0)}
         </div>
         <div className="col-span-1 flex justify-center items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleQuantityChange(item.qty - 1)}
-            disabled={loading}
-            className="cursor-pointer h-7 w-7"
-          >
-            <Minus className="h-4 w-4" />
-          </Button>
-          <span className="w-10 text-center">{item.qty}</span>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => handleQuantityChange(item.qty + 1)}
-            disabled={loading}
-            className="cursor-pointer h-7 w-7"
-          >
-            <Plus className="h-4 w-4" />
-          </Button>
+          {item.stock === 0 ? (
+            <span className="text-red-500 font-semibold">Out of Stock</span>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleQuantityChange(item.qty - 1)}
+                disabled={loading}
+                className="cursor-pointer h-7 w-7"
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-10 text-center">{item.qty}</span>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleQuantityChange(item.qty + 1)}
+                disabled={loading}
+                className="cursor-pointer h-7 w-7"
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </>
+          )}
         </div>
         <div className="col-span-1 text-center font-semibold">
           {currency}{(item.price * item.qty).toFixed(0)}
@@ -239,6 +249,8 @@ const CartPage = () => {
   const cartItems = allCartItems.filter(item => !item.deleted);
   const { currency } = useAppSelector(selectSettings);
   const grandTotal = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+  const hasOutOfStockItem = allCartItems.some(item => item.stock === 0);
 
   if (cartItems.length === 0) {
     return (
@@ -289,7 +301,13 @@ const CartPage = () => {
                 <span className="text-lg font-bold">Total</span>
                 <span className="text-lg font-bold">{currency}{grandTotal.toFixed(0)}</span>
               </div>
-              <Button size="lg" className="w-full mt-6">Process to Checkout</Button>
+              <Button size="lg" className="w-full mt-6" disabled={hasOutOfStockItem}>
+                {hasOutOfStockItem ? (
+                  <span className="text-sm">Out of Stock </span>
+                ) : (
+                  "Process to Checkout"
+                )}
+              </Button>
             </div>
           </div>
         </div>

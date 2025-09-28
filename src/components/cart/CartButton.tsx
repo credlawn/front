@@ -9,11 +9,7 @@ import { Button } from '@/ui/button';
 
 interface CartButtonProps {
   productId: string;
-  productName: string;
-  productImage: string;
-  price: number;
-  slug: string;
-  qty: number; 
+  qty?: number; 
 }
 
 const CartButton: React.FC<CartButtonProps> = ({

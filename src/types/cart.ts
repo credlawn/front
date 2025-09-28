@@ -9,4 +9,15 @@ export interface CartItem {
   priceChanged?: boolean;
   oldPrice?: number;
   deleted?: boolean;
+  productRating?: number;
+  ratingCount?: number;
+  reviewCount?: number;
+  unitsSold?: number;
+  minPurchaseQty?: number;
+  discountedPrice?: number;
+  discountPercent?: number;
+  discountAmount?: number;
+  stock?: number;
+  ndText?: string;
+  shortDescription?: string;
 }
