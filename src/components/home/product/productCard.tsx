@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import type { Product } from "@/types/product";
 import WishlistIcon from "@/components/wishlist/WishlistIcon";
-import CartButton from "@/components/cart/CartButton";
-import { Button } from '@/ui/button';
+import AddToCartIcon from "@/components/cart/AddToCartIcon";
+
 
 
 interface ProductCardProps {
@@ -35,7 +34,6 @@ export default function ProductCard({
 
 }: ProductCardProps) {
   const router = useRouter();
-  const [isHovered, setIsHovered] = useState(false);
   const priceAsNumber = product.price ? parseFloat(product.price.replace(/[^0-9.]/g, '')) : 0;
   const discountedPriceAsNumber = product.discountedPrice ? parseFloat(product.discountedPrice.replace(/[^0-9.]/g, '')) : 0;
 
@@ -84,11 +82,13 @@ export default function ProductCard({
               sizes="50vw"
               style={{ padding: "1px" }}
             />
-            <div className="absolute top-2 right-2 z-10">
-              <WishlistIcon productId={product.name} />
-            </div>
-          </div>
-          <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
+                              <div className="absolute top-2 right-2 z-10">
+                                <WishlistIcon productId={product.name} />
+                              </div>
+                              <div className="absolute top-10 right-2 z-10">
+                                <AddToCartIcon productId={product.name} stock={p.stock} />
+                              </div>
+                          </div>          <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
             <h3 className="mb-1" style={{ minHeight: "2.8em", lineHeight: "1.4em" }}>
               <span
                 className="text-natural-900 text-[14px] font-light tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block"
@@ -137,30 +137,35 @@ export default function ProductCard({
       {/* Desktop View */}
       <div 
         className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] relative"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
           <div className="cursor-pointer h-full flex flex-col" onClick={() => router.push(`/products/${p.slug}`)}>
-              <div className="relative bg-white pt-4" style={{ height: "200px" }}>
+              <div className="relative bg-white p-4" style={{ height: "200px" }}>
                   <Image
                       src={p.imageDefault}
                       alt={p.altText}
                       fill
-                      className="object-cover transition-transform duration-300"
+                      className="object-contain transition-transform duration-300"
                       sizes="240px"
-                      style={{ padding: "1px" }}
+                      // style={{ padding: "1px" }} // Removed this as p-4 handles it
                   />
                   <Image
                       src={p.imageHover}
                       alt={p.altText}
                       fill
-                      className="object-cover mx-0.5 my-0.5 absolute inset-0 opacity-0 transition-transform duration-300"
+                      className="object-contain mx-0.5 my-0.5 absolute inset-0 opacity-0 transition-transform duration-300"
                       sizes="240px"
-                      style={{ padding: "1px" }}
+                      // style={{ padding: "1px" }}
                   />
                   <div className="absolute top-2 right-2 z-10">
                     <WishlistIcon productId={product.name} />
                   </div>
+                                        <div className="absolute top-14 right-2 z-10">
+                                          <AddToCartIcon productId={product.name} stock={p.stock} />
+                                        </div>                  {(p.stock === 0 || (p.stock > 0 && p.stock <= 10)) && (
+                    <div className="absolute top-1 left-1 z-10 bg-red-500 text-white text-xs font-semibold pt-1 pl-1 pr-2 pb-1 rounded-md">
+                      {p.stock === 0 ? "Out of Stock" : "Only few left"}
+                    </div>
+                  )}
               </div>
               <div className="flex flex-col p-4 flex-grow justify-between"> {/* Added justify-between here */}
                   <div> {/* Wrapper for title and rating */}
@@ -196,7 +201,7 @@ export default function ProductCard({
                   </div>
 
                   {/* Price and Cart Button Section */}
-                  <div className="mt-auto"> {/* Pushes this section to the bottom */}
+                  <div className="mt-auto relative"> {/* Pushes this section to the bottom, added relative */}
                       <div className="flex items-baseline gap-2 mb-2"> {/* Price display */}
                           <p className="text-xl font-bold text-gray-900">
                               {currency}
@@ -216,28 +221,9 @@ export default function ProductCard({
                             ) : null}
                           </span>
                       </div>
-                      {p.stock === 0 ? (
-                        <p className="text-sm text-red-500 mb-2">Out of Stock</p>
-                      ) : p.stock > 0 && p.stock <= 10 ? (
-                        <p className="text-sm text-red-500 mb-2">Only few left</p>
-                      ) : null}
                       {p.shortDescription && ( // Display shortDescription if available
                         <p className="text-xs text-gray-600 mb-2 line-clamp-2">{p.shortDescription}</p>
                       )}
-                      <div className="w-full relative h-10"> {/* Added relative height for absolute positioning */}
-                          <div className={`absolute bottom-0 left-0 right-0 transition-all duration-300 ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}`}>
-                              {p.stock === 0 ? (
-                                <Button disabled className="w-full rounded-md bg-gray-400 px-3 py-2 text-sm font-semibold text-white shadow-sm cursor-not-allowed">
-                                  Out of Stock
-                                </Button>
-                              ) : (
-                                <CartButton
-                                  productId={product.name}
-                                  className="w-full" // Make button full width
-                                />
-                              )}
-                          </div>
-                      </div>
                   </div>
               </div>
           </div>

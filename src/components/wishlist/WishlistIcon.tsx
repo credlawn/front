@@ -7,6 +7,7 @@ import { AppDispatch, useAppSelector } from '@/redux/store';
 import { addToWishlist, removeFromWishlist, selectWishlistItems } from '@/redux/features/wishlist-slice';
 import { selectSession } from '@/redux/features/session-slice';
 import { cn } from '@/lib/utils';
+import { Button } from '@/ui/button';
 
 interface WishlistIconProps {
   productId: string;
@@ -38,28 +39,31 @@ const WishlistIcon: React.FC<WishlistIconProps> = ({ productId, className }) => 
 
   return (
     <div className="relative group/tooltip flex items-center">
-      <button
+      <Button
         onClick={handleToggle}
         className={cn(
-          "p-2 rounded-full bg-white shadow-md transition-all duration-300 ease-in-out cursor-pointer",
-          "hover:scale-110 active:scale-95",
+          "h-8 w-8 rounded-md cursor-pointer",
+          isInWishlist
+            ? 'bg-green-200 text-green-700 hover:bg-green-200'
+            : 'bg-blue-100 text-blue-600 hover:bg-blue-100',
+          
           className
         )}
         aria-label={isInWishlist ? 'Added' : 'Add to wishlist'}
       >
         <Heart
           className={cn(
-            "h-5 w-5 transition-colors",
-            isInWishlist ? 'text-red-500' : 'text-gray-500 hover:text-red-500'
+            "h-4 w-4 transition-colors",
+            isInWishlist ? 'text-green-700' : 'text-blue-600'
           )}
           fill={isInWishlist ? 'currentColor' : 'none'}
+          strokeWidth={2.5}
         />
-      </button>
-      <span className="absolute right-full top-1/2 -translate-y-1/2 mr-3 w-max px-3 py-2 bg-gray-100 text-red-500 text-sm font-semibold rounded-md scale-0 transition-all origin-right group-hover/tooltip:scale-100 hidden md:block">
-        {isInWishlist ? 'Added' : 'Add to wishlist'}
-      </span>
+      </Button>
+      
     </div>
   );
 };
+
 
 export default WishlistIcon;
