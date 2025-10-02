@@ -301,13 +301,15 @@ const CartPage = () => {
                 <span className="text-lg font-bold">Total</span>
                 <span className="text-lg font-bold">{currency}{grandTotal.toFixed(0)}</span>
               </div>
-              <Button size="lg" className="w-full mt-6" disabled={hasOutOfStockItem}>
-                {hasOutOfStockItem ? (
-                  <span className="text-sm">Out of Stock </span>
-                ) : (
-                  "Process to Checkout"
-                )}
-              </Button>
+              <Link href="/checkout" passHref>
+                <Button size="lg" className="w-full mt-6" disabled={hasOutOfStockItem}>
+                  {hasOutOfStockItem ? (
+                    <span className="text-sm">Out of Stock </span>
+                  ) : (
+                    "Process to Checkout"
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
