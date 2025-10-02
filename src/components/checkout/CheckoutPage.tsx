@@ -9,32 +9,32 @@ import { createSalesOrderAction, getEcomCustomersAction, createEcomCustomerActio
 import { useRouter } from 'next/navigation';
 import { useAppSelector } from '@/redux/store';
 import { selectCartItems } from '@/redux/features/cart-slice';
-import { EcomCustomerData, CustomerAddress } from '@/types/checkout';
+import { EcomCustomerData } from '@/types/checkout';
 import AddressForm from './AddressForm';
 import AddressSelection from './AddressSelection';
 import Payment from './Payment';
 
 export default function CheckoutPage() {
   const session = useSession();
+  const { user } = session;
   const router = useRouter();
   const cartItems = useAppSelector(selectCartItems);
 
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isSignupModalOpen, setSignupModalOpen] = useState(false);
-  const [checkoutStep, setCheckoutStep] = useState('initial'); // 'initial' | 'loading_customer_data' | 'address_selection' | 'address_form' | 'payment' | 'complete'
+  const [checkoutStep, setCheckoutStep] = useState('initial'); // 'initial' | 'loading_customer_data' | 'address_selection' | 'address_form' | 'payment'
   const [ecomCustomerProfiles, setEcomCustomerProfiles] = useState<EcomCustomerData[]>([]);
   const [selectedProfileName, setSelectedProfileName] = useState<string | null>(null);
-  const [orderId, setOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   // --- Effects ---
 
   useEffect(() => {
-    if (checkoutStep === 'loading_customer_data' && session.isLoggedin && session.user?.email) {
+    if (checkoutStep === 'loading_customer_data' && session.isLoggedin && user) {
       const fetchCustomerData = async () => {
         setLoading(true);
         try {
-          const result = await getEcomCustomersAction(session.user.email);
+          const result = await getEcomCustomersAction(user.email);
           setEcomCustomerProfiles(result);
           if (result.length > 0) {
             setCheckoutStep('address_selection');
@@ -52,7 +52,7 @@ export default function CheckoutPage() {
     } else if (checkoutStep === 'loading_customer_data' && !session.isLoggedin) {
         setLoginModalOpen(true);
     }
-  }, [checkoutStep, session.isLoggedin, session.user?.email, router]);
+  }, [checkoutStep, session.isLoggedin, user, router]);
 
   // --- Handlers ---
 
@@ -84,10 +84,10 @@ export default function CheckoutPage() {
   };
 
   const handleProfileFormSubmit = async (profileData: Omit<EcomCustomerData, 'name' | 'user'>) => {
-    if (!session.user?.email) return;
+    if (!user) return;
     setLoading(true);
     try {
-      await createEcomCustomerAction({ ...profileData, user_email: session.user.email });
+      await createEcomCustomerAction({ ...profileData, user_email: user.email });
       setCheckoutStep('loading_customer_data'); // Refetch profiles
     } catch (error) {
       console.error("Failed to create profile:", error);
@@ -103,19 +103,19 @@ export default function CheckoutPage() {
   };
 
   const handlePlaceOrder = async () => {
-    if (!selectedProfileName || !session.user?.email) return;
+    if (!selectedProfileName || !user) return;
     setLoading(true);
 
     try {
       const result = await createSalesOrderAction({
         cart_data: cartItems,
         ecom_customer_name: selectedProfileName,
-        user_email: session.user.email,
+        user_email: user.email,
       });
 
       if (result.status === 'success') {
-        setOrderId(result.sales_order_id);
-        setCheckoutStep('complete');
+        const totalAmount = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+        router.push(`/dummy-payment-gateway?order_id=${result.sales_order_id}&amount=${totalAmount}`);
       } else {
         alert(`Error placing order: ${result.message}`);
       }
@@ -162,14 +162,6 @@ export default function CheckoutPage() {
           onConfirmOrder={handlePlaceOrder}
           isLoading={loading}
         />
-      )}
-
-      {checkoutStep === 'complete' && (
-        <div className="text-center">
-          <h2 className="text-2xl font-bold text-green-600">Order Placed Successfully!</h2>
-          <p className="mt-2 text-gray-700">Your Order ID is: <span className="font-mono font-bold">{orderId}</span></p>
-          <button onClick={() => router.push('/')} className="mt-4 px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700">Continue Shopping</button>
-        </div>
       )}
 
       <LoginModal 

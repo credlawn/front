@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createPaymentAction } from '@/get-api-data/checkout';
 
@@ -8,8 +8,15 @@ export default function PaymentConfirmationPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [message, setMessage] = useState('Verifying your payment...');
+  const paymentInitiated = useRef(false);
 
   useEffect(() => {
+    // Prevent double execution in Strict Mode
+    if (paymentInitiated.current) {
+      return;
+    }
+    paymentInitiated.current = true;
+
     const sales_order_id = searchParams.get('order_id');
     const transaction_id = searchParams.get('txn_id');
     const payment_method = searchParams.get('method');
@@ -17,12 +24,16 @@ export default function PaymentConfirmationPage() {
     if (sales_order_id && transaction_id && payment_method) {
       const handlePayment = async () => {
         try {
-          await createPaymentAction({
+          const result = await createPaymentAction({
             sales_order_id,
             payment_method,
             transaction_id,
           });
-          setMessage('Payment successful! Your order is confirmed.');
+          if (result.message === 'Payment already processed.') {
+            setMessage('Your payment has already been confirmed.');
+          } else {
+            setMessage('Payment successful! Your order is confirmed.');
+          }
         } catch (error) {
           setMessage('There was an error processing your payment. Please contact support.');
           console.error("Payment confirmation error:", error);

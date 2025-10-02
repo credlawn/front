@@ -2,6 +2,7 @@
 
 import axiosInstance from "@/lib/axios";
 import { cookies } from 'next/headers';
+import { CartItem } from '@/types/cart';
 
 const getSid = async () => {
     const cookieStore = await cookies();
@@ -47,7 +48,7 @@ export async function updateEcomCustomerAction(customerData: { ecom_customer_nam
     }
 }
 
-export async function createSalesOrderAction(data: { cart_data: any[], ecom_customer_name: string, user_email: string }) {
+export async function createSalesOrderAction(data: { cart_data: CartItem[], ecom_customer_name: string, user_email: string }) {
     try {
         const sid = await getSid();
         const response = await axiosInstance.post("/api/method/myecom.api.checkout.create_sales_order",
