@@ -11,14 +11,12 @@ import { Button } from '@/ui/button'; // Assuming you have a Button component
 interface AddToCartIconProps {
   productId: string;
   qty?: number;
-  className?: string;
   stock?: number;
 }
 
 const AddToCartIcon: React.FC<AddToCartIconProps> = ({
   productId,
   qty = 1,
-  className,
   stock = 0,
 }) => {
   const dispatch: AppDispatch = useDispatch();
@@ -53,11 +51,12 @@ const AddToCartIcon: React.FC<AddToCartIconProps> = ({
     <Button
       onClick={handleAddToCart}
       disabled={isInCart || isOutOfStock}
-      className={`h-8 w-8 rounded-md ${!(isInCart || isOutOfStock) ? 'cursor-pointer' : ''} ${
+      size="icon"
+      className={`h-6 w-6 md:h-9 md:w-9 rounded-md ${!(isInCart || isOutOfStock) ? 'cursor-pointer' : ''} ${
         isInCart
           ? 'bg-green-200 text-green-700 hover:bg-green-200'
           : 'bg-blue-100 text-blue-600 hover:bg-blue-100'
-      } ${className}`}>
+      }`}>
       <ShoppingCart
         className="h-4 w-4" strokeWidth={2.5}
       />

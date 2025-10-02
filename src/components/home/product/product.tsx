@@ -55,7 +55,7 @@ export default function Product({ productData, settings, title }: ProductGridPro
             {productData.map((p) => (
               <div
                 key={p.name}
-                className="flex-shrink-0 w-72"
+                className="flex-shrink-0 w-62"
               >
                 <ProductCard
                   product={p}

@@ -82,13 +82,7 @@ export default function ProductCard({
               sizes="50vw"
               style={{ padding: "1px" }}
             />
-                              <div className="absolute top-2 right-2 z-10">
-                                <WishlistIcon productId={product.name} />
-                              </div>
-                              <div className="absolute top-10 right-2 z-10">
-                                <AddToCartIcon productId={product.name} stock={p.stock} />
-                              </div>
-                          </div>          <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
+                              </div>          <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
             <h3 className="mb-1" style={{ minHeight: "2.8em", lineHeight: "1.4em" }}>
               <span
                 className="text-natural-900 text-[14px] font-light tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block"
@@ -132,11 +126,15 @@ export default function ProductCard({
             </span>
           </div>
         </div>
+        <div className="absolute bottom-2 right-2 z-10 flex gap-3">
+          <WishlistIcon productId={product.name} />
+          <AddToCartIcon productId={product.name} stock={p.stock} />
+        </div>
       </div>
 
       {/* Desktop View */}
       <div 
-        className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-[1.02] relative"
+        className="hidden md:block group flex-shrink-0 rounded-md border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-lg relative"
       >
           <div className="cursor-pointer h-full flex flex-col" onClick={() => router.push(`/products/${p.slug}`)}>
               <div className="relative bg-white p-4" style={{ height: "200px" }}>
@@ -146,7 +144,7 @@ export default function ProductCard({
                       fill
                       className="object-contain transition-transform duration-300"
                       sizes="240px"
-                      // style={{ padding: "1px" }} // Removed this as p-4 handles it
+                      
                   />
                   <Image
                       src={p.imageHover}
@@ -154,24 +152,25 @@ export default function ProductCard({
                       fill
                       className="object-contain mx-0.5 my-0.5 absolute inset-0 opacity-0 transition-transform duration-300"
                       sizes="240px"
-                      // style={{ padding: "1px" }}
+                      
                   />
-                  <div className="absolute top-2 right-2 z-10">
+                  <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                     <WishlistIcon productId={product.name} />
                   </div>
-                                        <div className="absolute top-14 right-2 z-10">
-                                          <AddToCartIcon productId={product.name} stock={p.stock} />
-                                        </div>                  {(p.stock === 0 || (p.stock > 0 && p.stock <= 10)) && (
-                    <div className="absolute top-1 left-1 z-10 bg-red-500 text-white text-xs font-semibold pt-1 pl-1 pr-2 pb-1 rounded-md">
+                  <div className="absolute top-14 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <AddToCartIcon productId={product.name} stock={p.stock} />
+                  </div>
+                  {(p.stock === 0 || (p.stock > 0 && p.stock <= 10)) && (
+                    <div className="absolute top-3 left-1 z-10 bg-red-500 text-white text-[12px] font-bold pt-0.5 pl-1 pr-1 pb-0.5 s rounded-md">
                       {p.stock === 0 ? "Out of Stock" : "Only few left"}
                     </div>
                   )}
               </div>
               <div className="flex flex-col p-4 flex-grow justify-between"> {/* Added justify-between here */}
                   <div> {/* Wrapper for title and rating */}
-                      <h3 className="mb-2">
+                      <h2 className="mb-2">
                           <span
-                              className="text-base font-semibold tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block w-full"
+                              className="text-[14px] font-medium text-neutral-700 tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block w-full"
                               style={{
                                   display: "-webkit-box",
                                   WebkitLineClamp: 2,
@@ -183,7 +182,7 @@ export default function ProductCard({
                           >
                               {p.title}
                           </span>
-                      </h3>
+                      </h2>
                       <div className="flex items-center gap-1 mb-2 text-sm text-gray-600 select-none"> {/* Changed text-red-500 to text-gray-600 */}
                           <span>
                               {"★".repeat(Math.floor(p.rating))}
@@ -200,10 +199,10 @@ export default function ProductCard({
                       </div>
                   </div>
 
-                  {/* Price and Cart Button Section */}
-                  <div className="mt-auto relative"> {/* Pushes this section to the bottom, added relative */}
-                      <div className="flex items-baseline gap-2 mb-2"> {/* Price display */}
-                          <p className="text-xl font-bold text-gray-900">
+                  
+                  <div className="mt-auto relative"> 
+                      <div className="flex items-baseline gap-2 mb-2"> 
+                          <p className="text-sm font-bold text-gray-900">
                               {currency}
                               {formatInr(p.price)}
                           </p>
@@ -215,7 +214,7 @@ export default function ProductCard({
                           )}
                           <span className="ml-auto text-sm font-medium">
                             {p.discountPercent > 0 ? (
-                              <span className="text-green-600">{p.discountPercent.toFixed(0)}% off</span>
+                              <span className="text-green-600">-{p.discountPercent.toFixed(0)}% Off</span>
                             ) : p.ndText ? (
                               <span className="text-gray-600">{p.ndText}</span>
                             ) : null}
