@@ -20,7 +20,7 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ cartItems }) => {
         {cartItems.map(item => (
           <div key={item.product} className="flex justify-between">
             <div>
-              <p className="font-medium">{item.product_name}</p>
+              <p className="font-medium">{item.productName}</p>
               <p className="text-sm text-gray-600">Qty: {item.qty}</p>
             </div>
             <p>₹{item.price * item.qty}</p>

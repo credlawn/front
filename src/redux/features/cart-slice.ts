@@ -6,6 +6,7 @@ import {
   addToCartAction,
   removeFromCartAction,
   updateQuantityAction,
+  clearCartAction,
 } from '@/get-api-data/cart';
 import { RootState } from '../store';
 
@@ -88,6 +89,20 @@ export const updateQuantity = createAsyncThunk(
   }
 );
 
+export const clearCart = createAsyncThunk(
+  'cart/clearCart',
+  async (payload: { user?: string; guestUid?: string }, { rejectWithValue }) => {
+    try {
+      const response = await clearCartAction(payload);
+      toast.success('Cart cleared!');
+      return response;
+    } catch (error: any) {
+      toast.error('Failed to clear cart.');
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 export const cartSlice = createSlice({
   name: 'cart',
   initialState,
@@ -143,6 +158,17 @@ export const cartSlice = createSlice({
         state.items = action.payload;
       })
       .addCase(updateQuantity.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+      .addCase(clearCart.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(clearCart.fulfilled, (state, action: PayloadAction<CartItem[]>) => {
+        state.status = 'succeeded';
+        state.items = action.payload;
+      })
+      .addCase(clearCart.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.payload as string;
       });

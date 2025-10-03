@@ -3,12 +3,19 @@
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { createPaymentAction } from '@/get-api-data/checkout';
+import { useDispatch } from 'react-redux';
+import { useSession } from '@/auth/session';
+import { clearCart } from '@/redux/features/cart-slice';
+import { AppDispatch } from '@/redux/store';
 
 export default function PaymentConfirmationPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [message, setMessage] = useState('Verifying your payment...');
   const paymentInitiated = useRef(false);
+
+  const dispatch = useDispatch<AppDispatch>();
+  const session = useSession();
 
   useEffect(() => {
     // Prevent double execution in Strict Mode
@@ -33,6 +40,10 @@ export default function PaymentConfirmationPage() {
             setMessage('Your payment has already been confirmed.');
           } else {
             setMessage('Payment successful! Your order is confirmed.');
+            // Clear the cart after successful payment
+            if (session.isLoggedin && session.user?.email) {
+              dispatch(clearCart({ user: session.user.email }));
+            }
           }
         } catch (error) {
           setMessage('There was an error processing your payment. Please contact support.');
@@ -43,7 +54,7 @@ export default function PaymentConfirmationPage() {
     } else {
         setMessage('Invalid payment confirmation URL.');
     }
-  }, [searchParams]);
+  }, [searchParams, dispatch, session]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
