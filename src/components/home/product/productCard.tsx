@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Product } from "@/types/product";
 import WishlistIcon from "@/components/wishlist/WishlistIcon";
 import AddToCartIcon from "@/components/cart/AddToCartIcon";
+import StarRating from "@/components/star-rating/starRating";
 
 
 
@@ -41,18 +42,15 @@ export default function ProductCard({
     id: product.name,
     title: product.productName || "Untitled Product",
     rating: Math.max(0, Math.min(5, product.productRating || 0)),
-    rating_count: product.ratingCount || 0,
+    ratingCount: product.ratingCount || 0,
     discountPercent: product.discountPercent || 0,
     price: discountedPriceAsNumber || priceAsNumber,
     oldPrice: (discountedPriceAsNumber && priceAsNumber && discountedPriceAsNumber < priceAsNumber) ? priceAsNumber : 0,
     imageDefault: product.productImage1 || "/images/placeholder.jpg",
-    imageHover:
-      product.productImage2 ||
-      product.productImage1 ||
-      "/images/placeholder.jpg",
+    imageHover: product.productImage2 || product.productImage1 || "/images/placeholder.jpg",
     slug: product.productSlug || "#",
     altText: product.productName || product.productSlug || "Product image",
-    ndText: product.ndText || "Only few left",
+    ndText: product.ndText || "",
     unitsSold: product.unitsSold || 0,
     shortDescription: product.shortDescription || "",
     stock: product.stock || 0,
@@ -82,7 +80,8 @@ export default function ProductCard({
               sizes="50vw"
               style={{ padding: "1px" }}
             />
-                              </div>          <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
+            </div>          
+            <div className="flex flex-col p-2" style={{ height: `calc(100% - ${mobileImageHeight}px)` }}>
             <h3 className="mb-1" style={{ minHeight: "2.8em", lineHeight: "1.4em" }}>
               <span
                 className="text-natural-900 text-[14px] font-light tracking-wide capitalize line-clamp-2 group-hover:text-neutral-900 block"
@@ -104,7 +103,7 @@ export default function ProductCard({
                 {p.rating.toFixed(1)} ★
               </span>
               <span className="text-sm font-semibold text-gray-500 ml-1">
-                ({p.rating_count})
+                ({p.ratingCount})
               </span>
             </div>
             <div className="flex items-center gap-1 text-[14px] text-neutral-900 mt-1">
@@ -161,7 +160,7 @@ export default function ProductCard({
                     <AddToCartIcon productId={product.name} stock={p.stock} />
                   </div>
                   {(p.stock === 0 || (p.stock > 0 && p.stock <= 10)) && (
-                    <div className="absolute top-3 left-1 z-10 bg-red-500 text-white text-[12px] font-bold pt-0.5 pl-1 pr-1 pb-0.5 s rounded-md">
+                    <div className="absolute top-3 left-1 z-10 bg-red-500 text-white text-[12px] font-semibold pt-0.5 pl-1 pr-1 pb-0.5 s rounded-md">
                       {p.stock === 0 ? "Out of Stock" : "Only few left"}
                     </div>
                   )}
@@ -183,15 +182,12 @@ export default function ProductCard({
                               {p.title}
                           </span>
                       </h2>
-                      <div className="flex items-center gap-1 mb-2 text-sm text-gray-600 select-none"> {/* Changed text-red-500 to text-gray-600 */}
-                          <span>
-                              {"★".repeat(Math.floor(p.rating))}
-                              {"☆".repeat(5 - Math.floor(p.rating))}
+                      <div className="flex items-center gap-1 mb-2 text-sm text-gray-600 select-none"> 
+                          <StarRating rating={p.rating} fullColor="#EF4444" emptyColor="#d1d5db" size={14} gap={3}  />
+                          <span className="text-xs font-semibold text-gray-500 ml-2">
+                              ({p.ratingCount}) 
                           </span>
-                          <span className="text-sm font-semibold text-gray-500 ml-2">
-                              ({p.rating_count} reviews) {/* Added 'reviews' */}
-                          </span>
-                          {p.unitsSold > 0 && ( // Display units sold if available
+                          {p.unitsSold > 0 && ( 
                             <span className="text-sm font-semibold text-gray-500 ml-2">
                               | {p.unitsSold} sold
                             </span>
