@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { addToWishlist, removeFromWishlist, selectWishlistItems } from "@/redux/features/wishlist-slice";
 import { selectSession } from "@/redux/features/session-slice";
-import { Button } from "@/ui/button"; 
+import { Button } from "@/ui/button";
 
 interface WishlistButtonProps {
   productId: string;

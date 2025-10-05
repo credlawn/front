@@ -12,6 +12,7 @@ import { ReduxProvider } from "@/redux/provider";
 import  PreLoader  from "@/components/common/PreLoader";
 import CartProvider from "@/components/cart/CartProvider";
 import WishlistProvider from '@/components/wishlist/WishlistProvider';
+import { Toaster } from 'react-hot-toast';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -61,6 +62,7 @@ export default async function RootLayout({
             <WishlistProvider>
               <TopBannerContainer /> 
               <NavbarContainer />
+              <Toaster position="top-center" reverseOrder={false} />
               {!uid && <UIDGenerator />}
               {children}
               <VisitorsRecord />
