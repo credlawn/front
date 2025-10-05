@@ -1,63 +1,65 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import { usePathname } from 'next/navigation';
 import { useSession } from '@/auth/session';
-import { recordVisitorAction, updateSessionAction } from '@/get-api-data/visitor';
+import { recordVisitorAction } from '@/get-api-data/visitor';
 import { useSelector } from 'react-redux';
 import { selectSettings } from '@/redux/features/settings-slice';
 
 export default function VisitorsRecord() {
   const session = useSession();
   const { visitorTracking } = useSelector(selectSettings);
-  const visitStartTime = useRef(Date.now());
-  const isInitialLoad = useRef(true);
+  const pathname = usePathname();
+  const lastVisitTimestamp = useRef(Date.now());
+  const guestUidRef = useRef(session.uid);
 
-  useEffect(() => {
-    if (visitorTracking) {
-      const getSlug = () => window.location.pathname;
+  useEffect(() => { if (!visitorTracking) { return; }
 
-      const sendVisitorIdToFrappe = async (slug: string) => {
-        const { isLoggedin, user, uid } = session;
-        await recordVisitorAction(slug, isLoggedin ? user?.email : undefined, uid);
-      };
+    if (!session.isLoggedin && session.uid) { guestUidRef.current = session.uid; }
+      
+    const finalUser = session.user?.email;
+    const finalGuestUid = session.isLoggedin ? guestUidRef.current : session.uid;
+    
+    lastVisitTimestamp.current = Date.now();
+    recordVisitorAction(pathname, finalUser, finalGuestUid);
 
-      const sendSessionTimeUpdate = async (slug: string) => {
-        const { isLoggedin, user, uid } = session;
-        const timeSpent = Math.floor((Date.now() - visitStartTime.current) / 1000);
-        await updateSessionAction(slug, isLoggedin ? user?.email : undefined, uid, timeSpent);
-      };
+    
+    const sendTimeUpdate = (timeSpent: number) => {
+      if (timeSpent > 0) {
+        const payload = {
+          slug: pathname,
+          user: finalUser,
+          visitor_id: finalGuestUid,
+          time_spent: timeSpent,
+        };
+        const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+        navigator.sendBeacon('/api/beacon', blob);
+      }
+    };
 
-      const initVisitorTracking = async () => {
-        const slug = getSlug();
-        await sendVisitorIdToFrappe(slug);
-      };
+    
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        const elapsed = Date.now() - lastVisitTimestamp.current;
+        sendTimeUpdate(Math.floor(elapsed / 1000));
+        lastVisitTimestamp.current = Date.now(); 
 
-      const handleVisibilityChange = async () => {
-        const slug = getSlug();
-        if (document.visibilityState === 'visible' && !isInitialLoad.current) {
-          visitStartTime.current = Date.now();
-          await sendVisitorIdToFrappe(slug);
-        } else if (document.visibilityState === 'hidden') {
-          await sendSessionTimeUpdate(slug);
-        }
-        isInitialLoad.current = false;
-      };
+      } else if (document.visibilityState === 'visible') {
+        lastVisitTimestamp.current = Date.now();
+      }
+    };
 
-      const handleBeforeUnload = async () => {
-        const slug = getSlug();
-        await sendSessionTimeUpdate(slug);
-      };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
-      initVisitorTracking();
-      document.addEventListener('visibilitychange', handleVisibilityChange);
-      window.addEventListener('beforeunload', handleBeforeUnload);
 
-      return () => {
-        document.removeEventListener('visibilitychange', handleVisibilityChange);
-        window.removeEventListener('beforeunload', handleBeforeUnload);
-      };
-    }
-  }, [session, visitorTracking]);
+    return () => {
+      const finalElapsed = Date.now() - lastVisitTimestamp.current;
+      sendTimeUpdate(Math.floor(finalElapsed / 1000));
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+
+  }, [pathname, session, visitorTracking]);
 
   return null;
 }
