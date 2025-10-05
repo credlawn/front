@@ -11,7 +11,7 @@ export async function setSession(sid: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24,
+    maxAge: 60 * 60 * 24 * 30,
   });
   
   

@@ -9,10 +9,7 @@ import { Button } from "@/ui/button";
 
 interface WishlistButtonProps {
   productId: string;
-  productName: string;
-  productImage: string;
-  price: number;
-  slug: string;
+
 }
 
 const WishlistButton: React.FC<WishlistButtonProps> = ({
