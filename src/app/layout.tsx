@@ -37,18 +37,9 @@ export default async function RootLayout({
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settingsData = await getSiteSettings();
-
-  const sessionData = {
-    isLoggedin,
-    user,
-    sid,
-    uid,
-  };
-
-  const preloadedState = {
-    settingsReducer: settingsData,
-    session: sessionData,
-  }
+  const sessionData = { isLoggedin, user, sid, uid };
+  const preloadedState = { settingsReducer: settingsData, session: sessionData }
+    
 
 
   return (

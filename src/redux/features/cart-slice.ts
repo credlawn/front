@@ -91,13 +91,17 @@ export const updateQuantity = createAsyncThunk(
 
 export const clearCart = createAsyncThunk(
   'cart/clearCart',
-  async (payload: { user?: string; guestUid?: string }, { rejectWithValue }) => {
+  async (payload: { user?: string; guestUid?: string; silent?: boolean }, { rejectWithValue }) => {
     try {
       const response = await clearCartAction(payload);
-      toast.success('Cart cleared!');
+      if (!payload.silent) {
+        toast.success('Cart cleared!');
+      }
       return response;
     } catch (error: any) {
-      toast.error('Failed to clear cart.');
+      if (!payload.silent) {
+        toast.error('Failed to clear cart.');
+      }
       return rejectWithValue(error.message);
     }
   }

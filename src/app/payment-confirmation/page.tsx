@@ -42,7 +42,7 @@ export default function PaymentConfirmationPage() {
             setMessage('Payment successful! Your order is confirmed.');
             // Clear the cart after successful payment
             if (session.isLoggedin && session.user?.email) {
-              dispatch(clearCart({ user: session.user.email }));
+              dispatch(clearCart({ user: session.user.email, silent: true }));
             }
           }
         } catch (error) {
