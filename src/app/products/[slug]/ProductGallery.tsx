@@ -6,31 +6,20 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper/modules";
 import ImageModal from "./ImageModal";
 import { SingleProduct } from "@/types/product";
+import CartButton from "@/components/cart/CartButton";
 
 import "swiper/css";
 import "swiper/css/pagination";
 
-export default function ProductGallery({
-  product,
-  isModalOpen,
-  setIsModalOpen,
-}: {
-  product: SingleProduct;
-  isModalOpen: boolean;
-  setIsModalOpen: (open: boolean) => void;
-}) {
+export default function ProductGallery({ product, isModalOpen, setIsModalOpen, }: {
+  
+  product: SingleProduct; isModalOpen: boolean; setIsModalOpen: (open: boolean) => void; }) {
+  
   const [mainImage, setMainImage] = useState(product.productImage1);
   const [activeIndex, setActiveIndex] = useState(0);
+  const images: string[] = useMemo( () => product.productImages || [], [product.productImages], );
 
-  const images: string[] = useMemo(
-    () => product.productImages || [],
-    [product.productImages],
-  );
-
-  useEffect(() => {
-    const index = images.indexOf(mainImage!);
-    if (index !== -1) setActiveIndex(index);
-  }, [mainImage, images]);
+  useEffect(() => { const index = images.indexOf(mainImage!); if (index !== -1) setActiveIndex(index); }, [mainImage, images]);
 
   return (
     <>
@@ -113,9 +102,7 @@ export default function ProductGallery({
 
           {/* Desktop Buttons */}
           <div className="flex gap-2 mt-4">
-            <button className="bg-green-600 text-white justify-center px-6 py-2 rounded font-medium flex items-center gap-1 flex-1">
-              Add to cart
-            </button>
+            <CartButton productId={product.id} stock={product.stock} />
             <button className="bg-red-600 text-white justify-center px-6 py-2 rounded font-medium flex items-center gap-1 flex-1">
               Buy Now
             </button>

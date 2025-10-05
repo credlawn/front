@@ -6,7 +6,8 @@ import { SingleProduct } from "@/types/product";
 import ProductGallery from "./ProductGallery";
 import StarRating from "@/components/star-rating/starRating";
 import CheckPin from "./checkPin";
-import  WishlistButton  from "@/components/wishlist/WishlistButton";
+import WishlistButton from "@/components/wishlist/WishlistButton";
+import CartButton from "@/components/cart/CartButton";
 import { motion } from "framer-motion";
 import { SiteSettings } from "@/types/settings";
 
@@ -200,9 +201,7 @@ export default function ProductContent({
           transition={{ delay: 0.3 }}
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t p-3 flex gap-3 z-40 shadow-lg"
         >
-          <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium flex-1 transition-colors duration-200">
-            Add to cart
-          </button>
+          <CartButton productId={product.id} qty={quantity} stock={product.stock} />
           <button className="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium flex-1 transition-colors duration-200">
             Buy Now
           </button>
