@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { useDebounce } from '@/hooks/useDebounce';
+import { useDebounce } from '@/redux/useDebounce';
 import { Product, ProductFilterData, ProductListFilters } from '@/types/product';
 import { FilterControls } from '@/components/products/FilterControls';
 import { ProductGrid } from '@/components/products/ProductGrid';
