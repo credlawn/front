@@ -54,3 +54,25 @@ export interface SingleProduct {
   categories: ProductCategory[];
   currency: string;
 }
+
+export interface ProductFilterData {
+  brands: string[];
+  categories: string[];
+  maxPrice: number;
+}
+
+export interface PaginatedProductResponse {
+  products: Product[];
+  totalProducts: number;
+}
+
+export interface ProductListFilters {
+  category?: string;
+  brand?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  sortBy?: 'latest' | 'price_asc' | 'price_desc';
+  pageNum?: number;
+  pageSize?: number;
+  featured?: number;
+}

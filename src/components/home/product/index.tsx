@@ -1,8 +1,9 @@
 import { getProductPageData } from "@/get-api-data/product";
 import Product from "./product";
+import { ProductListFilters } from "@/types/product";
 
 interface ProductContainerProps {
-  filter: { featured?: number };
+  filter: ProductListFilters;
   title: string;
 }
 
