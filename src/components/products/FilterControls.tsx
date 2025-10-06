@@ -12,6 +12,7 @@ export function FilterControls({ filterData, onFilterChange }: FilterControlsPro
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState({ min: 0, max: 0 });
+  const [brandSearchTerm, setBrandSearchTerm] = useState('');
 
   useEffect(() => {
     if (filterData) {
@@ -58,6 +59,10 @@ export function FilterControls({ filterData, onFilterChange }: FilterControlsPro
     return <aside className="w-full lg:w-1/4 p-4"><div className="animate-pulse">Loading filters...</div></aside>;
   }
 
+  const filteredBrands = filterData.brands.filter(brand =>
+    brand.toLowerCase().includes(brandSearchTerm.toLowerCase())
+  );
+
   return (
     <aside className="w-full lg:w-1/4 p-4 bg-gray-50 rounded-lg self-start">
       <div className="flex justify-between items-center mb-4">
@@ -79,8 +84,14 @@ export function FilterControls({ filterData, onFilterChange }: FilterControlsPro
 
       <div className="mb-6">
         <h3 className="font-semibold mb-2">Brand</h3>
+        <input
+          type="text"
+          placeholder="Search brands..."
+          className="w-full p-2 mb-2 border rounded"
+          onChange={(e) => setBrandSearchTerm(e.target.value)}
+        />
         <div className="space-y-2 max-h-60 overflow-y-auto">
-          {filterData.brands.map((brand) => (
+          {filteredBrands.map((brand) => (
             <label key={brand} className="flex items-center">
               <input type="checkbox" checked={selectedBrands.includes(brand)} onChange={() => handleBrandChange(brand)} className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
               <span className="ml-3 text-gray-600">{brand}</span>
