@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { MenuResponse } from "@/types/menu";
-import { useAppSelector } from "@/redux/store"; 
+import { useAppSelector } from "@/redux/store";
+import { useResetOnNavigation } from "@/redux/useResetOnNavigation";
 import { Logo, LogoMobile } from "@/components/header/logo/logo";
 import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
@@ -17,11 +18,11 @@ interface NavbarProps {
 }
 
 export default function Navbar({ menuData }: NavbarProps) {
-  const settings = useAppSelector((state) => state.settingsReducer); 
+  const settings = useAppSelector((state) => state.settingsReducer);
   const wishlistItems = useAppSelector(selectWishlistItems);
   const cartItems = useAppSelector(selectCartItems);
   const wishlistCount = wishlistItems.length;
-  const cartCount = cartItems.reduce((total, item) => total + item.qty, 0); 
+  const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const searchButtonRef = useRef<HTMLButtonElement>(null);
@@ -31,6 +32,12 @@ export default function Navbar({ menuData }: NavbarProps) {
   const sidebarButtonRef = useRef<HTMLButtonElement>(null);
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+  // Close mobile search on navigation
+  const closeSearch = useCallback(() => {
+    setIsSearchOpen(false);
+  }, []);
+  useResetOnNavigation(closeSearch);
 
   const handleSearch = (query: string) => {
     console.log("Search query:", query);
