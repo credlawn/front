@@ -8,26 +8,34 @@ import { useAppSelector } from "@/redux/store";
 import Link from "next/link";
 import Image from "next/image";
 
+interface SearchResult {
+  name: string;
+  productSlug: string;
+  image: string;
+  productName: string;
+  price: number;
+  discountedPrice?: number;
+}
+
 interface SearchBoxProps {
   className?: string;
   onFocus?: () => void;
-}
-
-interface SearchResult {
-  name: string;
-  productName: string;
-  productSlug: string;
-  price: number;
-  discountedPrice?: number;
-  image: string;
+  autoFocus?: boolean;
+  isParentSearchOpen?: boolean; 
 }
 
 const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
-  ({ className = "", onFocus }, ref) => {
+  ({ className = "", onFocus, autoFocus = false, isParentSearchOpen }, ref) => {
     const [searchQuery, setSearchQuery] = useState("");
     const [results, setResults] = useState<SearchResult[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+    useEffect(() => {
+      if (isParentSearchOpen === false && searchQuery !== "") {
+        setSearchQuery("");
+      }
+    }, [isParentSearchOpen, searchQuery]);
 
     const { currency } = useAppSelector((state) => state.settingsReducer);
 
@@ -41,7 +49,7 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
     }, []);
     useResetOnNavigation(resetSearch);
 
-    // Animated placeholder
+  
     const [currentPlaceholder, setCurrentPlaceholder] = useState("");
     const [placeholderIndex, setPlaceholderIndex] = useState(0);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -75,7 +83,6 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
       return () => clearTimeout(timer);
     }, [currentPlaceholder, isDeleting, placeholderIndex, typingSpeed]);
 
-    // Effect to fetch search results
     useEffect(() => {
       if (debouncedQuery.length < 2) {
         setResults([]);
@@ -132,12 +139,13 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
               if (searchQuery.length > 1) setIsDropdownOpen(true);
             }}
             autoComplete="off"
+            autoFocus={autoFocus}
           />
           <SearchIcon className="h-4 w-4 text-gray-500" />
         </div>
 
         {isDropdownOpen && (
-          <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto">
+          <div ref={dropdownRef} className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded-lg shadow-lg z-50 max-h-96 overflow-y-auto min-h-[100px] py-2">
             {isLoading ? (
               <div className="px-4 py-3 text-sm text-gray-500">Searching...</div>
             ) : results.length > 0 ? (
@@ -146,7 +154,7 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
                   product.discountedPrice && product.discountedPrice < product.price;
                 const discountPercent = hasDiscount
                   ? Math.round(
-                      ((product.price - product.discountedPrice) / product.price) * 100
+                      ((product.price - product.discountedPrice!) / product.price) * 100
                     )
                   : 0;
 
@@ -164,7 +172,7 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
                       className="object-cover rounded-md"
                     />
                     <div className="ml-3">
-                      <p className="text-sm font-medium text-gray-800 truncate">{product.productName}</p>
+                      <p className="text-sm font-medium text-gray-800 line-clamp-2 mb-1">{product.productName}</p>
                       {hasDiscount ? (
                         <div className="flex items-center gap-2">
                           <p className="text-sm font-bold text-gray-800">
@@ -176,7 +184,7 @@ const SearchBox = forwardRef<HTMLDivElement, SearchBoxProps>(
                             {product.price}
                           </del>
                           <p className="text-xs font-bold text-green-600">
-                            {discountPercent}% OFF
+                            - {discountPercent}% Off
                           </p>
                         </div>
                       ) : (

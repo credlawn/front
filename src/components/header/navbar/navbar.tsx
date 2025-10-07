@@ -10,7 +10,7 @@ import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
 import { selectWishlistItems } from "@/redux/features/wishlist-slice";
 import { selectCartItems } from "@/redux/features/cart-slice";
-import { HeartIcon, MenuIcon, SearchIcon, ChevronDown, ShoppingCart } from "lucide-react";
+import { HeartIcon, MenuIcon, SearchIcon, ChevronDown, ShoppingCart, X } from "lucide-react";
 import Sidebar from "@/components/header/sidebar/sidebar";
 
 interface NavbarProps {
@@ -24,8 +24,8 @@ export default function Navbar({ menuData }: NavbarProps) {
   const wishlistCount = wishlistItems.length;
   const cartCount = cartItems.reduce((total, item) => total + item.qty, 0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const searchRef = useRef<HTMLDivElement>(null);
-  const searchButtonRef = useRef<HTMLButtonElement>(null);
+  
+  const searchTriggerRef = useRef<HTMLDivElement>(null); // Ref for the desktop search box wrapper
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -33,7 +33,6 @@ export default function Navbar({ menuData }: NavbarProps) {
 
   const [openMenu, setOpenMenu] = useState<string | null>(null);
 
-  // Close mobile search on navigation
   const closeSearch = useCallback(() => {
     setIsSearchOpen(false);
   }, []);
@@ -46,9 +45,9 @@ export default function Navbar({ menuData }: NavbarProps) {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        searchRef.current &&
-        !searchRef.current.contains(event.target as Node) &&
-        !searchButtonRef.current?.contains(event.target as Node)
+        isSearchOpen &&
+        searchTriggerRef.current &&
+        !searchTriggerRef.current.contains(event.target as Node)
       ) {
         setIsSearchOpen(false);
       }
@@ -57,7 +56,7 @@ export default function Navbar({ menuData }: NavbarProps) {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [isSearchOpen]);
 
   useEffect(() => {
     const handleClickOutsideSidebar = (event: MouseEvent) => {
@@ -78,8 +77,8 @@ export default function Navbar({ menuData }: NavbarProps) {
   return (
     <header className="relative">
       <div className="container-main flex items-center border-b-[0.5px] border-solid border-gray-300_01 bg-white h-13 px-4">
-        {/* Desktop View */}
-        <div className="hidden lg:flex items-center justify-between w-full h-8">
+        {/* ==================== Desktop View ==================== */}
+        <div className="hidden lg:flex items-center w-full h-8">
           <div className="flex-shrink-0">
             <Link href="/">
               <span className="cursor-pointer">
@@ -88,7 +87,11 @@ export default function Navbar({ menuData }: NavbarProps) {
             </Link>
           </div>
 
-          <nav className="flex items-center gap-4">
+          {/* Gap after logo */}
+          <div className="ml-8"></div>
+
+          {/* Menu (shrinks/hides when search is open) */}
+          <nav className={`flex items-center gap-4 transition-all duration-300 ${isSearchOpen ? 'w-0 opacity-0 overflow-hidden' : 'w-auto opacity-100'}`}>
             <ul className="flex items-center gap-4">
               {menuData.map((menuItem) => (
                 <li key={menuItem.parent.slug} className="relative">
@@ -126,31 +129,37 @@ export default function Navbar({ menuData }: NavbarProps) {
             </ul>
           </nav>
 
-          <div className="flex items-center gap-4">
-            <SearchBox onSearch={handleSearch} className="w-80" />
-            <div className="flex items-center gap-6">
-              <Link href="/wishlist" className="relative hover:text-red-500 transition-colors cursor-pointer">
-                <HeartIcon />
-                {wishlistCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {wishlistCount}
-                  </span>
-                )}
-              </Link>
-              <UserIconContainer />
-              <Link href="/cart" className="relative hover:text-red-500 transition-colors cursor-pointer">
-                <ShoppingCart />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
-            </div>
+          {/* Spacer to push search and icons to right */}
+          <div className="flex-grow"></div>
+
+          {/* Search Box (expands when open) */}
+          <div ref={searchTriggerRef} className={`transition-all duration-300 ${isSearchOpen ? 'flex-grow mr-4' : 'w-80 mr-4'}`}>
+            <SearchBox onSearch={handleSearch} className={`${isSearchOpen ? 'w-full' : 'w-80'}`} onFocus={() => setIsSearchOpen(true)} autoFocus={isSearchOpen} isParentSearchOpen={isSearchOpen} />
+          </div>
+
+          {/* Icons (fixed right) */}
+          <div className={`flex items-center gap-4 flex-shrink-0 transition-opacity duration-300`}>
+            <Link href="/wishlist" className="relative hover:text-red-500 transition-colors cursor-pointer">
+              <HeartIcon />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
+            <UserIconContainer />
+            <Link href="/cart" className="relative hover:text-red-500 transition-colors cursor-pointer">
+              <ShoppingCart />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
           </div>
         </div>
 
-        {/* Mobile View */}
+        {/* ==================== Mobile View ==================== */}
         <div className="flex lg:hidden items-center justify-between w-full h-6 relative">
           <div className="flex-shrink-0">
             <button
@@ -175,9 +184,8 @@ export default function Navbar({ menuData }: NavbarProps) {
 
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
-              ref={searchButtonRef}
               className="flex items-center justify-center"
-              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              onClick={() => setIsSearchOpen(true)}
               aria-label="Search"
             >
               <SearchIcon />
@@ -200,20 +208,24 @@ export default function Navbar({ menuData }: NavbarProps) {
             </Link>
           </div>
         </div>
+      </div>
 
-        {isSearchOpen && (
-          <div
-            ref={searchRef}
-            className="flex lg:hidden w-full absolute top-full left-0 right-0 bg-white py-2 px-4 z-50 shadow-lg border-t border-gray-200"
-          >
+      {/* ==================== Mobile Search Overlay (Desktop overlay removed) ==================== */}
+      {isSearchOpen && (
+        <div
+          className="lg:hidden absolute top-0 left-0 right-0 bg-white z-50 shadow-lg animate-in slide-in-from-top-2 duration-300"
+        >
+          <div className="container-main h-13 px-4 flex items-center">
             <SearchBox
               onSearch={handleSearch}
               className="w-full"
-              onFocus={() => setIsSearchOpen(true)}
+              autoFocus={true}
+              isParentSearchOpen={isSearchOpen}
             />
           </div>
-        )}
-      </div>
+        </div>
+      )}
+
       <div ref={sidebarRef}>
         <Sidebar
           isOpen={isSidebarOpen}
