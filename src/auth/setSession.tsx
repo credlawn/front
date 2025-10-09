@@ -7,7 +7,7 @@ export async function setSession(sid: string) {
   const cookieStore = await cookies();
   
   
-  cookieStore.set("sid", sid, {
+  cookieStore.set("user_session", sid, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
@@ -20,7 +20,7 @@ export async function setSession(sid: string) {
 export async function clearSession() {
   const cookieStore = await cookies();
   
-  cookieStore.set("sid", "", {
+  cookieStore.set("user_session", "", {
     path: "/",
     maxAge: 0,
   });

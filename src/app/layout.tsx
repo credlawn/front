@@ -33,7 +33,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const sid = cookieStore.get('sid')?.value;
+  const sid = cookieStore.get('user_session')?.value;
   const uid = cookieStore.get('uid')?.value;
   const { isLoggedin, data: user } = await checkCurrentUser();
   const settingsData = await getSiteSettings();
