@@ -19,6 +19,11 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/files/**",
       },
+      {
+        protocol: "https",
+        hostname: "credlawn.com",
+        pathname: "/**",
+      },
     ],
   },
 };
