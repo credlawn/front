@@ -11,6 +11,7 @@ export async function setSession(sid: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    sameSite: "lax",
     maxAge: 60 * 60 * 24 * 30,
   });
   
@@ -35,6 +36,7 @@ export async function ensureUid() {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     path: "/",
+    sameSite: "lax",
     maxAge: 60 * 60 * 24 * 365, // 1 year
   });
 

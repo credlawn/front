@@ -65,7 +65,7 @@ export async function logoutUser(): Promise<ApiResponse> {
 export async function checkCurrentUser(): Promise<ApiResponse<CurrentUser> & { isLoggedin: boolean }> {
   try {
     const cookieStore = await cookies();
-    const sidCookie = cookieStore.get('sid')?.value;
+    const sidCookie = cookieStore.get('user_session')?.value;
 
     if (!sidCookie) {
       return {

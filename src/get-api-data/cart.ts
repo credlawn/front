@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 
 const getSid = async () => {
     const cookieStore = await cookies();
-    return cookieStore.get('sid')?.value;
+    return cookieStore.get('user_session')?.value;
 }
 
 
