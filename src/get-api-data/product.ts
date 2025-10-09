@@ -65,7 +65,7 @@ export const getProductBySlug = async (
   }
 };
 
-export async function getProductPageData(filter: ProductListFilters = {}) {
+export const getProductPageData = async (filter: ProductListFilters = {}) => {
   const [productResponse, settings] = await Promise.all([
     getProductList(filter),
     getSiteSettings(),
@@ -73,3 +73,21 @@ export async function getProductPageData(filter: ProductListFilters = {}) {
   
   return { productData: productResponse.products, settings };
 }
+
+export const getProductSlugs = async (limit: number = 1000): Promise<{ slug: string }[]> => {
+  try {
+    const response = await api("product_list.get_product_list", {
+      method: "POST",
+      body: JSON.stringify({ limit }),
+      next: { revalidate: 3600, tags: ["product-data"] },
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch product slugs");
+
+    const data = await response.json();
+    return (data.message?.products || []).map((p: any) => ({ slug: p.productSlug }));
+  } catch (error) {
+    console.error("Error fetching product slugs:", error);
+    return [];
+  }
+};
