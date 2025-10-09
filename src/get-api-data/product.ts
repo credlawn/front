@@ -4,6 +4,7 @@ import {
   ProductFilterData,
   ProductListFilters,
   SingleProduct,
+  Product
 } from "@/types/product";
 import { getSiteSettings } from "./settings";
 
@@ -85,7 +86,7 @@ export const getProductSlugs = async (limit: number = 1000): Promise<{ slug: str
     if (!response.ok) throw new Error("Failed to fetch product slugs");
 
     const data = await response.json();
-    return (data.message?.products || []).map((p: any) => ({ slug: p.productSlug }));
+    return (data.message?.products || []).map((p: Product) => ({ slug: p.productSlug }));
   } catch (error) {
     console.error("Error fetching product slugs:", error);
     return [];
