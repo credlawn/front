@@ -30,12 +30,15 @@ export const sessionSlice = createSlice({
       state.isLoggedin = false;
       state.user = undefined;
       state.sid = undefined;
-      state.uid = undefined;
+      // Keep uid for tracking purposes even when session is cleared
+    },
+    setUid: (state, action: PayloadAction<string>) => {
+      state.uid = action.payload;
     },
   },
 });
 
-export const { setSession, clearSession } = sessionSlice.actions;
+export const { setSession, clearSession, setUid } = sessionSlice.actions;
 
 export const selectSession = (state: RootState) => state.session;
 

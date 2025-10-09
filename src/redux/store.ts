@@ -8,7 +8,7 @@ import productDetailsReducer from "./features/product-details";
 import settingsReducer from "./features/settings-slice";
 import sessionReducer from "./features/session-slice";
 
-import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 
 const rootReducer = combineReducers({
   quickViewReducer,
@@ -31,4 +31,5 @@ export const makeStore = (preloadedState?: Partial<RootState>) => {
 export type AppStore = ReturnType<typeof makeStore>;
 export type AppDispatch = AppStore['dispatch'];
 
+export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

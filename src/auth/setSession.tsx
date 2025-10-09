@@ -37,4 +37,6 @@ export async function ensureUid() {
     path: "/",
     maxAge: 60 * 60 * 24 * 365, // 1 year
   });
+
+  return newUid;
 }
