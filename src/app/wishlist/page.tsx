@@ -27,10 +27,6 @@ const WishlistProductCard: React.FC<{ item: WishlistItem }> = ({ item }) => {
       <p className="text-lg font-bold mb-4">{item.price}</p>
       <WishlistButton 
         productId={item.product}
-        productName={item.productName}
-        productImage={item.productImage}
-        price={item.price}
-        slug={item.slug}
       />
     </div>
   );
