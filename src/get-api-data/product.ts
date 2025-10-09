@@ -14,7 +14,7 @@ export const getProductList = async (
     const response = await api("product_list.get_product_list", {
       method: "POST",
       body: JSON.stringify(filters),
-      next: { revalidate: 0, tags: ["product-data"] },
+      next: { revalidate: 3600, tags: ["product-data"] },
     });
 
     if (!response.ok) throw new Error("Failed to fetch product list");
@@ -49,7 +49,7 @@ export const getProductBySlug = async (
     const response = await api(
       `single_product.get_product_by_slug?slug=${slug}`,
       {
-        next: { tags: [`product-data`, `product-${slug}`] },
+        next: { revalidate: 3600, tags: [`product-data`, `product-${slug}`] },
       }
     );
 

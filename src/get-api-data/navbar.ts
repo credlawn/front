@@ -6,7 +6,7 @@ export const getMenuList = unstable_cache(
   async (): Promise<MenuResponse[]> => {
     try {
       const response = await api("menu_list.get_menu_list", {
-        next: { revalidate: 0, tags: ['navbar-data'] },
+        next: { revalidate: 3600, tags: ['navbar-data'] },
       });
 
       if (!response.ok) {

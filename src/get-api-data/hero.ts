@@ -6,7 +6,7 @@ export const getHeroDetails = unstable_cache(
   async (): Promise<HeroItem[]> => {
     try {
       const response = await api("hero_section.get_hero_details", {
-        next: { revalidate: 0, tags: ['hero-data'] }, 
+        next: { revalidate: 3600, tags: ['hero-data'] }, 
       });
 
       if (!response.ok) throw new Error("Failed to fetch hero details");

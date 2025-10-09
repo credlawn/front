@@ -6,7 +6,9 @@ import { unstable_cache } from "next/cache";
 export const getBannerMessages = unstable_cache(
   async (): Promise<string[]> => {
     try {
-      const response = await api("banner_message.get_banner_message");
+      const response = await api("banner_message.get_banner_message", {
+        next: { revalidate: 3600, tags: ['banner-messages'] },
+      });
 
       if (!response.ok) throw new Error("Failed to fetch banner messages");
 

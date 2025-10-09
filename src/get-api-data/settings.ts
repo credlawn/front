@@ -5,7 +5,7 @@ export const getSiteSettings = unstable_cache(
   async () => {
     try {
       const response = await api("site_settings.get_site_settings", {
-        next: { revalidate: 0, tags: ['site-settings'] }, 
+        next: { revalidate: 3600, tags: ['site-settings'] }, 
       });
 
       if (!response.ok) {

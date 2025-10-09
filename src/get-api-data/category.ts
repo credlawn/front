@@ -6,7 +6,7 @@ export const getCategoryList = unstable_cache(
   async (): Promise<Category[]> => {
     try {
       const response = await api("category_list.get_category_list", {
-        next: { revalidate: 0, tags: ['category-data'] }, 
+        next: { revalidate: 3600, tags: ['category-data'] }, 
       });
 
       if (!response.ok) throw new Error("Failed to fetch category list");
