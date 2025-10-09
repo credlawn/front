@@ -10,7 +10,7 @@ import SearchBox from "@/components/header/searchbox/searchBox";
 import UserIconContainer from "@/icon/user";
 import { selectWishlistItems } from "@/redux/features/wishlist-slice";
 import { selectCartItems } from "@/redux/features/cart-slice";
-import { HeartIcon, MenuIcon, SearchIcon, ChevronDown, ShoppingCart, X } from "lucide-react";
+import { HeartIcon, MenuIcon, SearchIcon, ChevronDown, ShoppingCart} from "lucide-react";
 import Sidebar from "@/components/header/sidebar/sidebar";
 
 interface NavbarProps {
@@ -26,6 +26,7 @@ export default function Navbar({ menuData }: NavbarProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   
   const searchTriggerRef = useRef<HTMLDivElement>(null); // Ref for the desktop search box wrapper
+  const mobileSearchOverlayRef = useRef<HTMLDivElement>(null);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -38,16 +39,14 @@ export default function Navbar({ menuData }: NavbarProps) {
   }, []);
   useResetOnNavigation(closeSearch);
 
-  const handleSearch = (query: string) => {
-    console.log("Search query:", query);
-  };
-
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         isSearchOpen &&
         searchTriggerRef.current &&
-        !searchTriggerRef.current.contains(event.target as Node)
+        !searchTriggerRef.current.contains(event.target as Node) &&
+        (!mobileSearchOverlayRef.current ||
+          !mobileSearchOverlayRef.current.contains(event.target as Node))
       ) {
         setIsSearchOpen(false);
       }
@@ -134,7 +133,7 @@ export default function Navbar({ menuData }: NavbarProps) {
 
           {/* Search Box (expands when open) */}
           <div ref={searchTriggerRef} className={`transition-all duration-300 ${isSearchOpen ? 'flex-grow mr-4' : 'w-80 mr-4'}`}>
-            <SearchBox onSearch={handleSearch} className={`${isSearchOpen ? 'w-full' : 'w-80'}`} onFocus={() => setIsSearchOpen(true)} autoFocus={isSearchOpen} isParentSearchOpen={isSearchOpen} />
+            <SearchBox className={`${isSearchOpen ? 'w-full' : 'w-80'}`} onFocus={() => setIsSearchOpen(true)} autoFocus={isSearchOpen} isParentSearchOpen={isSearchOpen} />
           </div>
 
           {/* Icons (fixed right) */}
@@ -213,11 +212,11 @@ export default function Navbar({ menuData }: NavbarProps) {
       {/* ==================== Mobile Search Overlay (Desktop overlay removed) ==================== */}
       {isSearchOpen && (
         <div
+          ref={mobileSearchOverlayRef}
           className="lg:hidden absolute top-0 left-0 right-0 bg-white z-50 shadow-lg animate-in slide-in-from-top-2 duration-300"
         >
           <div className="container-main h-13 px-4 flex items-center">
             <SearchBox
-              onSearch={handleSearch}
               className="w-full"
               autoFocus={true}
               isParentSearchOpen={isSearchOpen}
