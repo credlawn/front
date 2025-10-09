@@ -6,7 +6,7 @@ import { CartItem } from '@/types/cart';
 
 const getSid = async () => {
     const cookieStore = await cookies();
-    return cookieStore.get('sid')?.value;
+    return cookieStore.get('user_session')?.value;
 }
 
 export async function getEcomCustomersAction(user_email: string) {
