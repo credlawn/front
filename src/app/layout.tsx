@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Outfit } from "next/font/google";
 import "./globals.css";
-import { cookies } from 'next/headers';
-import UIDGenerator from '@/auth/tracking';
-import { checkCurrentUser } from '@/auth/login';
 import { getSiteSettings } from "@/get-api-data/settings";
 import VisitorsRecord from "@/auth/visitorsRecord";
 import NavbarContainer from "@/components/header/navbar";
@@ -13,6 +10,7 @@ import  PreLoader  from "@/components/common/PreLoader";
 import CartProvider from "@/components/cart/CartProvider";
 import WishlistProvider from '@/components/wishlist/WishlistProvider';
 import { Toaster } from 'react-hot-toast';
+import SessionLoader from "@/redux/SessionLoader";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -32,15 +30,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const cookieStore = await cookies();
-  const sid = cookieStore.get('user_session')?.value;
-  const uid = cookieStore.get('uid')?.value;
-  const { isLoggedin, data: user } = await checkCurrentUser();
   const settingsData = await getSiteSettings();
-  const sessionData = { isLoggedin, user, sid, uid };
-  const preloadedState = { settingsReducer: settingsData, session: sessionData }
-    
-
+  const preloadedState = { settingsReducer: settingsData };
 
   return (
     <html lang="en">
@@ -54,7 +45,7 @@ export default async function RootLayout({
               <TopBannerContainer /> 
               <NavbarContainer />
               <Toaster position="top-center" reverseOrder={false} />
-              {!uid && <UIDGenerator />}
+              <SessionLoader />
               {children}
               <VisitorsRecord />
             </WishlistProvider>
